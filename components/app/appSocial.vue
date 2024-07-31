@@ -1,7 +1,3 @@
-<script setup lang="ts">
-
-</script>
-
 <template>
   <div class="app-social-links">
     <a href="#" target="_blank" class="app-social-links__item">

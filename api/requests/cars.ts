@@ -1,8 +1,18 @@
 import { CarClass, type CarInterface } from "~/api/models/car";
 
 const carsQuery = gql`
- query getCars($carClass: GraphQLStringOrFloat) {
-    cars(filter: { class: { id: { _eq: $carClass } }}) {
+  query getCarsByClassId($carClass: ID!, $carClassId: GraphQLStringOrFloat!) {
+    meta: classesCars_by_id(id: $carClass) {
+      title
+    }
+    models: brands(filter: { items: { class: { id: { _eq: $carClassId } } } }) {
+      title
+      slug
+      count: items_func {
+        count
+      }
+    }
+    cars(filter: { class: { id: { _eq: $carClassId } } }) {
       id
       name
       mileage
@@ -13,6 +23,11 @@ const carsQuery = gql`
       year_release
       coast
       worktime
+      reg_number
+      park {
+        id
+        address
+      }
       photos {
         file: directus_files_id {
           id
@@ -40,16 +55,26 @@ const carsCategoryCounts = gql`
 `;
 
 export async function getCars($carClass: number = CarClass.COMFORT) {
-  return useAsyncQuery<{ cars: CarInterface[] }>(carsQuery, {
+  return useAsyncQuery<{
+    meta: { title: string; description?: string };
+    models: { title: string; slug: string; count: { count: number } }[];
+    cars: CarInterface[];
+  }>(carsQuery, {
     carClass: `${$carClass}`,
+    carClassId: `${$carClass}`,
   }).then(({ data }) => {
-    return { data: data.value?.cars };
+    const models = data.value?.models.map((model) => ({
+      title: model.title,
+      count: model.count.count,
+      slug: model.slug,
+    }));
+    return { data: { ...data.value, models } };
   });
 }
 
 export async function getCategoriesCarsCount() {
   return useAsyncQuery<{
-    classesCars: { id: number, count: { count: number }, title: string }[];
+    classesCars: { id: number; count: { count: number }; title: string }[];
   }>(carsCategoryCounts).then(({ data }) => {
     return {
       data: data.value?.classesCars.map((category) => ({

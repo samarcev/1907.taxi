@@ -7,10 +7,11 @@ export interface CarInterface {
   name: string;
   mileage: number;
   class: CarClass;
-  year_release: 2020;
-  reg_number: null;
+  year_release: number;
+  reg_number: string;
   worktime: string;
   photos: CarImage[];
+  park: CarPark;
 }
 
 interface CarImage {
@@ -22,11 +23,16 @@ interface CarImage {
     filename_disk: string;
     filename_download: string;
     title: string;
-  }
+  };
+}
+
+interface CarPark {
+  id: number;
+  address: string;
 }
 
 export enum CarClass {
-  ECONOMY= 1, // Эконом
+  ECONOMY = 1, // Эконом
   COMFORT, // Комфорт
   COMFORT_PLUS, // Комфорт+
   BUSINESS, // Бизнес

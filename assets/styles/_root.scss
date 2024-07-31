@@ -1,12 +1,26 @@
 /* Breakpoints */
 $md: 991px;
 $sm: 768px;
+// colors
+$default-text-color: #1f2023;
+$accent-color: #ffd502;
+$green-color: #55BC36;
+$grey-color: #b6b6b6;
+$grey-color-light: #e7e7e7;
 
 :root {
   --app-default-text-color: #1f2023;
   --app-accent-color: #ffd502;
+  --app-green-color: #55BC36;
   --app-grey-color: #b6b6b6;
+  --app-grey-color-light: #e7e7e7;
+}
 
-  --app-breakpoint-md: $md;
-  --app-breakpoint-sm: $sm;
+.text {
+  &-color-accent {
+    color: var(--app-accent-color) !important
+  }
+  &-color-green {
+    color: var(--app-green-color);
+  }
 }

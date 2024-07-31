@@ -12,7 +12,28 @@
   color: inherit;
   cursor: pointer;
   text-decoration: none;
+  transition: all 0.2s ease-in-out;
+  @mixin button-active($bg-color) {
+    background-color: $bg-color;
+    &:active {
+      background-color: darken($bg-color, 5%);
+      // Можно добавить дополнительные стили для активного состояния
+      box-shadow: none; // например, удалить тень
+    }
+  }
   &-accent {
-    background: var(--app-accent-color);
+    @include button-active($accent-color);
+  }
+  &-success {
+    color: white;
+    @include button-active($green-color);
+  }
+  &-outline{
+    background: none;
+    color: var(--app-grey-color);
+    border: 1px solid currentColor !important;
+    &:active {
+      background: rgba(#000, 0.05);
+    }
   }
 }

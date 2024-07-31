@@ -11,9 +11,18 @@ export default defineNuxtConfig({
   css: ["@/assets/styles/main.scss"],
   app: {
     head: {
+      htmlAttrs: {
+        lang: 'ru'
+      },
       charset: "utf-8",
       viewport: "width=device-width, initial-scale=1",
       titleTemplate: "%s - Автопилот Такси",
+      link: [
+        {
+          rel: "icon",
+          href: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyMDAgMjAwIj4KCTxzdHlsZT4KCQljaXJjbGUgewoJCQlmaWxsOiAjRkZENTAyOwoJCX0KCTwvc3R5bGU+CgoJPGNpcmNsZSBjeD0iMTAwIiBjeT0iMTAwIiByPSIxMDAiLz4KCgkKPC9zdmc+",
+        },
+      ],
       script: [
         {
           src: "https://kit.fontawesome.com/4fe3494c81.js",
@@ -21,17 +30,19 @@ export default defineNuxtConfig({
         },
       ],
     },
+    pageTransition: { name: 'page', mode: 'out-in'}
   },
   runtimeConfig: {
-    publicRuntimeConfig: {
+    public: {
       API_ASSETS: process.env.API_ASSETS,
+      defaultHost: process.env.DEFAULT_HOST,
     },
   },
   apollo: {
     proxyCookies: true,
     clients: {
       default: {
-        httpEndpoint: process.env.API_ROOT as string
+        httpEndpoint: process.env.API_ENDPOINT_GQL as string,
       },
     },
   },

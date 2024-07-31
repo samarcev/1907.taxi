@@ -2,9 +2,16 @@
 import AppHeader from "~/components/base/AppHeader.vue";
 import AppCategoriesCars from "~/components/base/AppCategoriesCars.vue";
 
-definePageMeta({
-  middleware: ["redirect-to-default-path"],
-});
+const route = useRoute();
+const $env = useRuntimeConfig();
+useHead(() => ({
+  link: [
+    {
+      rel: "canonical",
+      href: "https://" + $env.public.defaultHost + route.path,
+    },
+  ],
+}));
 </script>
 
 <template>

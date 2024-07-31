@@ -1,33 +1,26 @@
 <script setup lang="ts">
-import { getCategoriesCarsCount } from "~/api/requests/cars";
+import { useCarState } from "~/store/cars";
 import { CarClass } from "~/api/models/car";
 
-const { data } = await getCategoriesCarsCount()
-const categories = CarClass;
-const categoriesAliases = {
-  [categories.ECONOMY]: "Эконом",
-  [categories.COMFORT]: "Комфорт",
-  [categories.COMFORT_PLUS]: "Комфорт+",
-  [categories.BUSINESS]: "Бизнес",
-  [categories.DELIVERY]: "Доставка",
-};
+const store = useCarState();
+store.GET_CAR_CLASSES()
 </script>
 
 <template>
   <nav class="app-categories-cars">
     <nuxt-link
-      v-for="(category, idx) of data"
+      v-for="(category) of store.carClasses"
       :href="
-        category.class.toString() === categories.COMFORT_PLUS.toString()
+        category.class.toString() === CarClass.COMFORT_PLUS.toString()
           ? '/'
-          : categories[category.class].toLowerCase()
+          : CarClass[category.class].toLowerCase()
       "
       :key="category.class"
       active-class="active"
     >
       <span class="badge">{{ category.count }}</span>
       <span>
-        {{ categoriesAliases[category.class] }}
+        {{ category.title }}
       </span>
     </nuxt-link>
   </nav>

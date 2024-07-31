@@ -14,7 +14,6 @@ defineProps({
   <div class="app-cars-big-slider">
     <Swiper
       :modules="[Navigation, A11y, Mousewheel]"
-      :loop="true"
       :navigation="{
         nextEl: '.app-cars-big-slider__navigation .slider-navigation__next',
         prevEl: '.app-cars-big-slider__navigation .slider-navigation__prev',
@@ -23,6 +22,7 @@ defineProps({
       :effect="'slide'"
       :space-between="32"
       :centered-slides="true"
+      :free-mode="true"
       :mousewheel="true"
     >
       <SwiperSlide
@@ -33,7 +33,7 @@ defineProps({
         <div class="app-cars-big-slider__item">
           <div
             class="app-cars-big-slider__item__wrapper"
-            :data-available-count="'??'"
+            :data-available-count="'77'"
           >
             <div class="app-cars-big-slider__item-header">
               <div class="app-cars-big-slider__item-title">
@@ -42,7 +42,7 @@ defineProps({
               <div class="app-cars-big-slider__item-available">
                 <span> Доступно: </span>
                 <span class="app-cars-big-slider__item-available-count">
-                  ??
+                  77
                 </span>
               </div>
             </div>
@@ -141,6 +141,7 @@ defineProps({
         font-weight: 700;
         line-height: 0.65;
         z-index: 0;
+        text-align: right;
       }
     }
     &-header {
