@@ -1,0 +1,20 @@
+@import url("https://fonts.googleapis.com/css2?family=Onest:wght@100..900&display=swap");
+// global.sass
+@import "root";
+
+@import "ui";
+
+*, *:before, *:after {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+img {
+  max-width: 100%;
+}
+
+body {
+  color: var(--app-default-text-color);
+  font-family: "Onest", sans-serif;
+  min-height: 100vh;
+}

@@ -1,0 +1,12 @@
+/* Breakpoints */
+$md: 991px;
+$sm: 768px;
+
+:root {
+  --app-default-text-color: #1f2023;
+  --app-accent-color: #ffd502;
+  --app-grey-color: #b6b6b6;
+
+  --app-breakpoint-md: $md;
+  --app-breakpoint-sm: $sm;
+}

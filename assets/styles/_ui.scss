@@ -1,0 +1,18 @@
+/* Buttons */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px;
+  background: var(--app-grey-color);
+  border-radius: 8px;
+  gap: 8px;
+  border: 1px solid;
+  color: inherit;
+  cursor: pointer;
+  text-decoration: none;
+  &-accent {
+    background: var(--app-accent-color);
+  }
+}
