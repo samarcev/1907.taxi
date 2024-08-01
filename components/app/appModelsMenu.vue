@@ -13,8 +13,9 @@ defineProps({
   <div class="container">
     <nav class="app-models-menu">
       <nuxt-link
-        :to="(route.params.category ?? 'comfort_plus') + '/' + model.slug + '/'"
+        :to="route.params.category + '/' + model.slug + '/'"
         v-for="(model, idx) in items"
+        active-class="active"
         :key="idx"
       >
         <span>{{ model.title }} </span

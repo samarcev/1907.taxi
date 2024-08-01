@@ -8,11 +8,8 @@ const $route = useRoute();
 const carClassParam = (
   $route.params.category as string
 ).toUpperCase() as keyof typeof CarClass;
-
 const { data } = await getCars(CarClass[carClassParam]);
-
 const carList = data?.cars || [];
-
 useSeoMeta({
   ogTitle: "[og:title]",
   ogDescription: "[og:description]",
@@ -32,7 +29,7 @@ useHead({
 
 <template>
   <div>
-    <app-models-menu :items="data.models || []" />
+    <app-models-menu :items="data?.models || []" />
     <app-cars-big-slider :items="carList?.slice(0, 3)" />
     <div class="container">
       <app-car-list :items="carList" />

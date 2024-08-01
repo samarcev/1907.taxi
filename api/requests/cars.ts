@@ -54,7 +54,14 @@ const carsCategoryCounts = gql`
   }
 `;
 
-export async function getCars($carClass: number = CarClass.COMFORT) {
+export async function getCars($carClass: number) {
+  if (!$carClass) {
+    throw createError({
+      status: 404,
+      statusCode: 404,
+      message: "Page not found",
+    });
+  }
   return useAsyncQuery<{
     meta: { title: string; description?: string };
     models: { title: string; slug: string; count: { count: number } }[];

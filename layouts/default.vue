@@ -19,7 +19,7 @@ useHead(() => ({
     <app-header />
     <app-categories-cars />
     <main>
-      <NuxtPage />
+      <slot />
     </main>
   </div>
 </template>
