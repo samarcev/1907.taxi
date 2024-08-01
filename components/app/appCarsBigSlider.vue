@@ -23,7 +23,9 @@ defineProps({
       :space-between="32"
       :centered-slides="true"
       :free-mode="true"
-      :mousewheel="true"
+      :mousewheel="{
+        eventsTarget: 'container'
+      }"
     >
       <SwiperSlide
         v-for="slide in items"
