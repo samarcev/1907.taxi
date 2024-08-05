@@ -1,5 +1,4 @@
 import { CarClass, type CarInterface } from "~/api/models/car";
-
 const carsQuery = gql`
   query getCarsByClassId($carClass: ID!, $carClassId: GraphQLStringOrFloat!) {
     meta: classesCars_by_id(id: $carClass) {
@@ -47,6 +46,7 @@ const carsCategoryCounts = gql`
     classesCars {
       id
       title
+      default_category: default
       count: items_func {
         count
       }
@@ -75,19 +75,20 @@ export async function getCars($carClass: number) {
       count: model.count.count,
       slug: model.slug,
     }));
-    return { data: { ...data.value, models } };
+    return { data: { ...data.value, models: models || [] } };
   });
 }
 
 export async function getCategoriesCarsCount() {
   return useAsyncQuery<{
-    classesCars: { id: number; count: { count: number }; title: string }[];
+    classesCars: { id: number; count: { count: number }; title: string , default_category: boolean}[];
   }>(carsCategoryCounts).then(({ data }) => {
     return {
       data: data.value?.classesCars.map((category) => ({
         class: +category.id as CarClass,
         title: category.title,
         count: category.count.count,
+        default_category: category.default_category
       })),
     };
   });

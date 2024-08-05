@@ -10,6 +10,9 @@ body {
   font-family: "Onest", sans-serif;
   min-height: 100vh;
   background: linear-gradient(0deg, var(--app-grey-color-light) 0%, transparent 55%);
+  #__root {
+    min-height: 100vh;
+  }
 }
 .container {
   max-width: 1264px;
@@ -24,4 +27,23 @@ body {
 .page-leave-to {
   opacity: 0;
   filter: blur(1rem);
+}
+
+.modal-fade-enter-active,
+.modal-fade-leave-active {
+  transition: all 0.4s;
+}
+.modal-fade-enter-from,
+.modal-fade-leave-to {
+  opacity: 0;
+}
+
+.list-enter-active,
+.list-leave-active {
+  transition: all 1s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateY(30px);
 }

@@ -33,7 +33,7 @@ useHead({
     <app-cars-big-slider :items="carList?.slice(0, 3)" />
     <div class="container">
       <app-car-list :items="carList" />
-    </div>
+    </div>-
   </div>
 </template>
 

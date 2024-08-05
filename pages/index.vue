@@ -8,18 +8,18 @@ const { data } = await getCars(CarClass.COMFORT_PLUS);
 const carList = data?.cars || [];
 
 useSeoMeta({
-  ogTitle: "[og:title]",
-  ogDescription: "[og:description]",
+  ogTitle: data.meta?.title,
+  ogDescription: data.meta?.description,
   ogImage: "[og:image]",
   ogUrl: "[og:url]",
-  twitterTitle: "[twitter:title]",
-  twitterDescription: "[twitter:description]",
+  twitterTitle: data.meta?.title,
+  twitterDescription: data.meta?.description,
   twitterImage: "[twitter:image]",
   twitterCard: "summary",
 });
 
 useHead({
-  title: data?.meta?.title || "",
+  title: data.meta?.title,
   meta: [{ name: "description", content: "My amazing site." }],
 });
 </script>

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { CarInterface } from "~/api/models/car";
-import type { PropType } from "vue";
+import { type PropType, ref } from "vue";
+import AppModal from "~/components/base/AppModal.vue";
 
 defineProps({
   data: {
@@ -9,6 +10,7 @@ defineProps({
   },
 });
 const $env = useRuntimeConfig().public;
+let openModal = ref<boolean>(false);
 function formatNumber(num: number) {
   // Преобразуем число в строку и удаляем все нецифровые символы
   const numStr = num.toString().replace(/\D/g, "");
@@ -56,10 +58,7 @@ function formatNumber(num: number) {
         <div>
           <span
             >Автопарк: <u>{{ data.park.address }}</u
-            >&nbsp;
-            <i
-              class="fa fa-location-dot text-color-accent"
-            ></i
+            >&nbsp; <i class="fa fa-location-dot text-color-accent"></i
           ></span>
         </div>
       </div>
@@ -71,9 +70,18 @@ function formatNumber(num: number) {
       </div>
     </div>
     <div class="app-car-list__item-actions">
-      <button class="btn btn-success">Забронировать</button>
+      <button class="btn btn-success" @click="openModal = true">
+        Забронировать
+      </button>
       <button class="btn btn-outline">Подробные условия</button>
     </div>
+    <app-modal
+        :show="openModal"
+        @closeModal="openModal = false"
+        :id="'modal-' + data.id"
+    >
+      <pre>{{ data }}</pre>
+    </app-modal>
   </div>
 </template>
 

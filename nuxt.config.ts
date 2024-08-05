@@ -30,7 +30,8 @@ export default defineNuxtConfig({
         },
       ],
     },
-    pageTransition: { name: 'page', mode: 'out-in'}
+    pageTransition: { name: 'page', mode: 'out-in'},
+    rootId: '__root'
   },
   runtimeConfig: {
     public: {

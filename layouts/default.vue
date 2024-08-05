@@ -25,7 +25,13 @@ useHead(() => ({
 </template>
 
 <style scoped lang="scss">
-main {
-  margin: 0 auto;
+#main-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  justify-content: space-between;
+  main {
+    flex: 1;
+  }
 }
 </style>
