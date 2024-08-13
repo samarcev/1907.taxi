@@ -1,32 +1,30 @@
 <script setup lang="ts">
 import AppCarsBigSlider from "~/components/app/appCarsBigSlider.vue";
-import { getCars } from "~/api/requests/cars";
-import { CarClass } from "~/api/models/car";
+import {getCars, getDefaultClassCars} from "~/api/requests/cars";
 import AppModelsMenu from "~/components/app/appModelsMenu.vue";
 
-const { data } = await getCars(CarClass.COMFORT_PLUS);
-const carList = data?.cars || [];
+const { data } = await getDefaultClassCars();
+const carList = data?.items || [];
 
 useSeoMeta({
-  ogTitle: data.meta?.title,
-  ogDescription: data.meta?.description,
+  ogTitle: data?.title,
+  ogDescription: "",
   ogImage: "[og:image]",
   ogUrl: "[og:url]",
-  twitterTitle: data.meta?.title,
-  twitterDescription: data.meta?.description,
+  twitterTitle: data?.title,
+  twitterDescription: "",
   twitterImage: "[twitter:image]",
   twitterCard: "summary",
 });
 
 useHead({
-  title: data.meta?.title,
+  title: data?.title,
   meta: [{ name: "description", content: "My amazing site." }],
 });
 </script>
 
 <template>
   <div>
-    <app-models-menu :items="data.models || []" />
     <app-cars-big-slider :items="carList?.slice(0, 3)" />
     <div class="container">
       <app-car-list :items="carList" />

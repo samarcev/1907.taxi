@@ -2,6 +2,14 @@
 import type { CarInterface } from "~/api/models/car";
 import { type PropType, ref } from "vue";
 import AppModal from "~/components/base/AppModal.vue";
+import moment from "moment/min/moment-with-locales";
+import "moment/locale/ru";
+
+import { A11y, Navigation, Thumbs } from "swiper/modules";
+import { Swiper, SwiperSlide } from "swiper/vue";
+import type { Swiper as SwiperType } from "swiper";
+
+moment.locale("ru");
 
 defineProps({
   data: {
@@ -20,6 +28,26 @@ function formatNumber(num: number) {
 
   // Форматируем число с пробелами
   return numStr.replace(regex, "$1 ");
+}
+
+const mainSwiper = ref<SwiperType | null>(null);
+const thumbsSwiper = ref<SwiperType | null>(null);
+const activeSlideIndex = ref(0);
+const setThumbsSwiper = (swiper: SwiperType) => {
+  thumbsSwiper.value = swiper;
+};
+const setMainSwiper = (swiper: SwiperType) => {
+  mainSwiper.value = swiper;
+};
+
+const onSlideChange = (swiper: SwiperType) => {
+  activeSlideIndex.value = swiper.activeIndex; // Обновляем индекс активного слайда
+};
+
+function closeModal() {
+  openModal.value = false;
+  mainSwiper.value = null;
+  thumbsSwiper.value = null;
 }
 </script>
 
@@ -63,24 +91,144 @@ function formatNumber(num: number) {
         </div>
       </div>
       <div class="app-car-list__item-car-info" v-if="data.photos.length > 1">
-        <button class="more-photos">
+        <button class="more-photos" @click="openModal = true">
           <i class="fa fa-camera text-color-green"></i>
           <span>Посмотреть фото</span>
         </button>
       </div>
     </div>
     <div class="app-car-list__item-actions">
-      <button class="btn btn-success" @click="openModal = true">
-        Забронировать
+      <button class="btn btn-success">Забронировать</button>
+      <button class="btn btn-outline" @click="openModal = true">
+        Подробные условия
       </button>
-      <button class="btn btn-outline">Подробные условия</button>
     </div>
     <app-modal
-        :show="openModal"
-        @closeModal="openModal = false"
-        :id="'modal-' + data.id"
+      :show="openModal"
+      @closeModal="closeModal()"
+      :id="'modal-' + data.id"
     >
-      <pre>{{ data }}</pre>
+      <div class="more-info-car">
+        <div class="more-info-car-wrapper">
+          <div class="more-info-car__header">
+            <h2>{{ data.reg_number }}</h2>
+          </div>
+          <div class="more-info-car__body">
+            <div class="more-info-car-info">
+              <div>
+                <h3>{{ data.name }}</h3>
+                <div class="car-characteristics">
+                  <ul>
+                    <li>
+                      <span>Год:</span> <b>{{ data.year_release }}</b>
+                    </li>
+                    <li>
+                      <span>Цена:</span> <b>{{ data.coast }} ₽/день </b>
+                    </li>
+                    <li>
+                      <span>Класс:</span> <b> {{ data.class.title }} </b>
+                    </li>
+                    <li>
+                      <span>Выкуп: </span> <b> {{ null }} </b>
+                    </li>
+                    <li>
+                      <span>Пробег: </span>
+                      <b>
+                        {{
+                          data.mileage
+                            .toString()
+                            .replace(/\B(?=(\d{3})+(?!\d))/g, " ")
+                        }}
+                        км
+                      </b>
+                    </li>
+                    <li>
+                      <span>Аренда: </span>
+                      <b>
+                        {{ data.worktime }}
+                      </b>
+                    </li>
+                    <li>
+                      <span>Автопарк: </span>
+                      <b>
+                        {{ data.park.name }}
+                      </b>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+              <div class="car-address">
+                <div>
+                  <span>
+                    <span>Адрес парка:</span>
+                    <br /><b>{{ data.park.address }}</b>
+                  </span>
+                </div>
+                <div>
+                  <div id="map" ref="mapRef"></div>
+                </div>
+              </div>
+            </div>
+            <div class="more-info-car-photos">
+              <div class="more-info-car-photos__header">
+                <span>{{ activeSlideIndex + 1 }}/{{ data.photos.length }}</span>
+                <span>
+                  Загружено
+                  {{ moment(data.date_created).format("D MMMM") }}
+                </span>
+              </div>
+              <div class="more-info-car-photos__body">
+                <!-- Основной слайдер -->
+                <Swiper
+                  :modules="[Navigation, A11y, Thumbs]"
+                  :slides-per-view="1"
+                  :space-between="32"
+                  :effect="'slide'"
+                  watch-slides-progress
+                  :thumbs="{
+                    swiper: thumbsSwiper,
+                  }"
+                  @slideChange="onSlideChange"
+                  @swiper="setMainSwiper"
+                  class="main-slider"
+                >
+                  <SwiperSlide v-for="(slide, idx) in data.photos" :key="idx">
+                    <img
+                      :src="$env.API_ASSETS + slide.file.id"
+                      alt=""
+                      class="main-slider__item"
+                    />
+                  </SwiperSlide>
+                </Swiper>
+
+                <!-- Слайдер с миниатюрами -->
+                <Swiper
+                  :modules="[Thumbs]"
+                  :space-between="10"
+                  :slides-per-view="5"
+                  @swiper="setThumbsSwiper"
+                  class="thumbs-slider"
+                >
+                  <SwiperSlide v-for="(slide, idx) in data.photos" :key="idx">
+                    <img
+                      :src="
+                        $env.API_ASSETS +
+                        slide.file.id +
+                        '?width=103&height=76&quality=50&format=webp'
+                      "
+                      alt=""
+                      class="thumbs-slider__item"
+                    />
+                  </SwiperSlide>
+                </Swiper>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="more-info-car__actions">
+          <button class="btn">Забронировать</button>
+        </div>
+      </div>
     </app-modal>
   </div>
 </template>
@@ -125,6 +273,84 @@ function formatNumber(num: number) {
   border: none;
   span {
     border-bottom: 1px dashed var(--app-grey-color);
+  }
+}
+.more-info-car {
+  width: 1088px;
+  max-width: 100%;
+  padding: 38px 70px 64px;
+  &__header {
+    margin-bottom: 30px;
+  }
+  &__body {
+    display: flex;
+    gap: 50px;
+  }
+  &-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 40px;
+    width: 350px;
+    h3 {
+      margin-bottom: 23px;
+    }
+    .car-characteristics {
+      ul {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px 45px;
+        list-style: none;
+        justify-content: space-between;
+        li {
+          flex: 1;
+          white-space: nowrap;
+        }
+      }
+    }
+  }
+  &-photos {
+    max-width: 531px;
+    &__header {
+      display: flex;
+      gap: 30px;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    &__body {
+      .main-slider__item {
+        border-radius: 25px;
+      }
+      .thumbs-slider {
+        .swiper-slide-thumb-active {
+          img {
+            border: 2px solid var(--app-accent-color);
+          }
+        }
+        &__item {
+          cursor: pointer;
+          border-radius: 10px;
+        }
+      }
+    }
+  }
+  &-wrapper {
+    margin-bottom: 56px;
+  }
+  &__actions {
+    display: flex;
+    width: 100%;
+    justify-content: center;
+    gap: 20px;
+    .btn {
+      background-color: #1f2023;
+      color: white;
+      max-width: 384px;
+      width: 100%;
+      height: 44px;
+      border-radius: 44px;
+      font-weight: 500;
+    }
   }
 }
 </style>

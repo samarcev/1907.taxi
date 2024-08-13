@@ -6,7 +6,10 @@ export interface CarInterface {
   coast: number;
   name: string;
   mileage: number;
-  class: CarClass;
+  class: {
+    id: CarClass,
+    title: string
+  };
   year_release: number;
   reg_number: string;
   worktime: string;
@@ -29,6 +32,7 @@ interface CarImage {
 interface CarPark {
   id: number;
   address: string;
+  name: string
 }
 
 export enum CarClass {

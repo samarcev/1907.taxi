@@ -1,4 +1,5 @@
 import { CarClass, type CarInterface } from "~/api/models/car";
+
 const carsQuery = gql`
   query getCarsByClassId($carClass: ID!, $carClassId: GraphQLStringOrFloat!) {
     meta: classesCars_by_id(id: $carClass) {
@@ -13,6 +14,7 @@ const carsQuery = gql`
     }
     cars(filter: { class: { id: { _eq: $carClassId } } }) {
       id
+      date_created
       name
       mileage
       class {
@@ -26,6 +28,7 @@ const carsQuery = gql`
       park {
         id
         address
+        name
       }
       photos {
         file: directus_files_id {
@@ -50,6 +53,45 @@ const carsCategoryCounts = gql`
       count: items_func {
         count
       }
+    }
+  }
+`;
+const carsDefaultClass = gql`
+  query {
+    classesCars(filter: { default: { _eq: true } }) {
+      id
+      title
+      items {
+        id
+        date_created
+        name
+        mileage
+        class {
+          id
+          title
+        }
+        year_release
+        coast
+        worktime
+        reg_number
+        park {
+          id
+          address
+          name
+        }
+        photos {
+          file: directus_files_id {
+            id
+            filesize
+            width
+            height
+            filename_disk
+            filename_download
+            title
+          }
+        }
+      }
+      default
     }
   }
 `;
@@ -81,15 +123,29 @@ export async function getCars($carClass: number) {
 
 export async function getCategoriesCarsCount() {
   return useAsyncQuery<{
-    classesCars: { id: number; count: { count: number }; title: string , default_category: boolean}[];
+    classesCars: {
+      id: number;
+      count: { count: number };
+      title: string;
+      default_category: boolean;
+    }[];
   }>(carsCategoryCounts).then(({ data }) => {
-    return {
-      data: data.value?.classesCars.map((category) => ({
-        class: +category.id as CarClass,
-        title: category.title,
-        count: category.count.count,
-        default_category: category.default_category
-      })),
-    };
+    if (data.value)
+      return {
+        data: data.value!.classesCars.map((category) => ({
+          class: +category.id as CarClass,
+          title: category.title,
+          count: category.count.count,
+          default_category: category.default_category,
+        })),
+      };
+  });
+}
+
+export async function getDefaultClassCars() {
+  return useAsyncQuery<{
+    classesCars: { title: string; id: CarClass; items: CarInterface[] }[];
+  }>(carsDefaultClass).then((response) => {
+    return { data: response.data.value?.classesCars[0] };
   });
 }

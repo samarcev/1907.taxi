@@ -12,7 +12,7 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: {
-        lang: 'ru'
+        lang: "ru",
       },
       charset: "utf-8",
       viewport: "width=device-width, initial-scale=1",
@@ -27,11 +27,11 @@ export default defineNuxtConfig({
         {
           src: "https://kit.fontawesome.com/4fe3494c81.js",
           crossorigin: "anonymous",
-        },
+        }
       ],
     },
-    pageTransition: { name: 'page', mode: 'out-in'},
-    rootId: '__root'
+    pageTransition: { name: "page", mode: "out-in" },
+    rootId: "__root",
   },
   runtimeConfig: {
     public: {

@@ -12,7 +12,9 @@
   "dependencies": {
     "@nuxtjs/proxy": "^2.1.0",
     "@pinia/nuxt": "^0.5.1",
+    "2gis-maps": "^3.7.4",
     "axios": "^1.7.2",
+    "moment": "^2.30.1",
     "nuxt": "^3.12.3",
     "nuxt-swiper": "^1.2.2",
     "pinia": "^2.1.7",

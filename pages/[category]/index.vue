@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { CarClass } from "~/api/models/car";
 import AppCarsBigSlider from "~/components/app/appCarsBigSlider.vue";
-import { getCars } from "~/api/requests/cars";
 import AppModelsMenu from "~/components/app/appModelsMenu.vue";
+import { getCars } from "~/api/requests/cars";
 
 const $route = useRoute();
 const carClassParam = (
@@ -32,8 +32,9 @@ useHead({
     <app-models-menu :items="data?.models || []" />
     <app-cars-big-slider :items="carList?.slice(0, 3)" />
     <div class="container">
+      <app-filters-car-list @filtersChange=""></app-filters-car-list>
       <app-car-list :items="carList" />
-    </div>-
+    </div>
   </div>
 </template>
 

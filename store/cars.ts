@@ -4,7 +4,7 @@ import { getCategoriesCarsCount } from "~/api/requests/cars";
 export const useCarState = defineStore("cars", {
   actions: {
     async GET_CAR_CLASSES() {
-      const { data } = (await getCategoriesCarsCount()) as {
+      const response= (await getCategoriesCarsCount()) as {
         data: {
           class: CarClass;
           title: string;
@@ -12,7 +12,7 @@ export const useCarState = defineStore("cars", {
           default_category: boolean;
         }[];
       };
-      this.carClasses = data ?? [];
+      this.carClasses = response?.data ?? [];
     },
   },
   state: () => {

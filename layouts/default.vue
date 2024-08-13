@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import AppHeader from "~/components/base/AppHeader.vue";
-import AppCategoriesCars from "~/components/base/AppCategoriesCars.vue";
+import AppCategoriesCars from "~/components/app/AppCategoriesCars.vue";
 
 const route = useRoute();
 const $env = useRuntimeConfig();

@@ -8,8 +8,12 @@ defineProps({
     type: String,
     default: "modal",
   },
+  backDrop: {
+    type: Boolean,
+    default: true,
+  },
 });
-defineEmits(['close-modal'])
+defineEmits(["close-modal"]);
 </script>
 
 <template>
@@ -17,15 +21,41 @@ defineEmits(['close-modal'])
     <transition name="modal-fade">
       <div
         class="modal-overlay"
-        @click="$emit('close-modal')"
+        @click="backDrop ? $emit('close-modal') : null"
         :id="id"
         v-if="show"
-        role="dialog"
         ref="modal"
         aria-modal="true"
         aria-labelledby="modal-headline"
       >
         <div class="modal" role="dialog" @click.stop>
+          <button
+            type="button"
+            class="modal-close"
+            aria-label="Close modal"
+            @click="$emit('close-modal')"
+          >
+            <svg
+              width="33"
+              height="33"
+              viewBox="0 0 33 33"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M32 1L1 32"
+                stroke="#3C3C3C"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+              <path
+                d="M1 1L32 32"
+                stroke="#3C3C3C"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
+            </svg>
+          </button>
           <slot />
         </div>
       </div>
@@ -54,7 +84,18 @@ defineEmits(['close-modal'])
     max-width: 100vw;
     background-color: #fff;
     box-shadow: 0 0 10px rgba(#000, 0.15);
+    position: relative;
+    &-close {
+      position: absolute;
+      top: 30px;
+      right: 30px;
+      width: 30px;
+      height: 30px;
+      background: none;
+      border: none;
+      font-weight: 300;
+      font-size: 31px;
+    }
   }
 }
-
 </style>
