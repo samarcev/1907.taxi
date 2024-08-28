@@ -32,6 +32,7 @@ useHead(() => ({
   justify-content: space-between;
   main {
     flex: 1;
+    padding-bottom: 50px;
   }
 }
 </style>

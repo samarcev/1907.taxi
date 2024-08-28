@@ -1,0 +1,4 @@
+schema:
+  - schema.graphql
+  - https://api.autopilot-taxi.tw1.su/graphql
+documents: '**/*.graphql'

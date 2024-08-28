@@ -85,8 +85,12 @@ function closeModal() {
         </div>
         <div>
           <span
-            >Автопарк: <u>{{ data.park.address }}</u
-            >&nbsp; <i class="fa fa-location-dot text-color-accent"></i
+            >Автопарк:
+            <span style="display: inline-flex; align-items: center">
+              <span
+                ><u>{{ data.park.address }}</u
+                >&nbsp; <i class="fa fa-location-dot text-color-accent"></i
+              ></span> </span
           ></span>
         </div>
       </div>
@@ -129,16 +133,12 @@ function closeModal() {
                       <span>Класс:</span> <b> {{ data.class.title }} </b>
                     </li>
                     <li>
-                      <span>Выкуп: </span> <b> {{ null }} </b>
+                      <span>Выкуп: </span> <b> {{ data.ransom ? 'Да' : 'Нет' }} </b>
                     </li>
                     <li>
                       <span>Пробег: </span>
                       <b>
-                        {{
-                          data.mileage
-                            .toString()
-                            .replace(/\B(?=(\d{3})+(?!\d))/g, " ")
-                        }}
+                        {{ formatNumber(data.mileage) }}
                         км
                       </b>
                     </li>

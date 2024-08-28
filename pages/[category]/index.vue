@@ -9,7 +9,7 @@ const carClassParam = (
   $route.params.category as string
 ).toUpperCase() as keyof typeof CarClass;
 const { data } = await getCars(CarClass[carClassParam]);
-const carList = data?.cars || [];
+const carList = data.cars || [];
 useSeoMeta({
   ogTitle: "[og:title]",
   ogDescription: "[og:description]",
@@ -22,20 +22,29 @@ useSeoMeta({
 });
 
 useHead({
-  title: data?.meta?.title || "",
+  title: data.meta?.title || "",
   meta: [{ name: "description", content: "My amazing site." }],
 });
 </script>
 
 <template>
   <div>
-    <app-models-menu :items="data?.models || []" />
-    <app-cars-big-slider :items="carList?.slice(0, 3)" />
-    <div class="container">
-      <app-filters-car-list @filtersChange=""></app-filters-car-list>
-      <app-car-list :items="carList" />
+    <app-models-menu :items="data.models || []" />
+    <app-cars-big-slider :items="carList.slice(0, 3)" />
+    <div class="container app-main">
+      <div>
+        <app-filters-car-list @filtersChange="" :current-count="carList.length"></app-filters-car-list>
+      </div>
+      <div>
+        <app-car-list :items="carList" />
+      </div>
     </div>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+.app-main {
+  display: flex;
+  gap: 20px;
+}
+</style>

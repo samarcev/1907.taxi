@@ -11,7 +11,7 @@ const route = useRoute();
 <template>
   <nav class="app-categories-cars">
     <nuxt-link
-      v-for="category of store.carClasses"
+      v-for="category of store.carClasses.filter((c) => c.count)"
       :to="'/' + CarClass[category.class].toLowerCase()"
       :key="category.class"
       active-class="active"

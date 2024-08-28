@@ -15,6 +15,7 @@ export interface CarInterface {
   worktime: string;
   photos: CarImage[];
   park: CarPark;
+  ransom: boolean
 }
 
 interface CarImage {

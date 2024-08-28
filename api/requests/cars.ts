@@ -1,6 +1,40 @@
 import { CarClass, type CarInterface } from "~/api/models/car";
 
+const carScheme = gql`
+  fragment CarScheme on cars {
+    id
+    date_created
+    name
+    mileage
+    class {
+      id
+      title
+    }
+    year_release
+    coast
+    worktime
+    reg_number
+    park {
+      id
+      address
+      name
+    }
+    photos {
+      file: directus_files_id {
+        id
+        filesize
+        width
+        height
+        filename_disk
+        filename_download
+        title
+      }
+    }
+    ransom
+  }`
+
 const carsQuery = gql`
+  ${carScheme}
   query getCarsByClassId($carClass: ID!, $carClassId: GraphQLStringOrFloat!) {
     meta: classesCars_by_id(id: $carClass) {
       title
@@ -13,34 +47,7 @@ const carsQuery = gql`
       }
     }
     cars(filter: { class: { id: { _eq: $carClassId } } }) {
-      id
-      date_created
-      name
-      mileage
-      class {
-        id
-        title
-      }
-      year_release
-      coast
-      worktime
-      reg_number
-      park {
-        id
-        address
-        name
-      }
-      photos {
-        file: directus_files_id {
-          id
-          filesize
-          width
-          height
-          filename_disk
-          filename_download
-          title
-        }
-      }
+        ...CarScheme
     }
   }
 `;
@@ -57,41 +64,41 @@ const carsCategoryCounts = gql`
   }
 `;
 const carsDefaultClass = gql`
+  ${carScheme}
   query {
     classesCars(filter: { default: { _eq: true } }) {
       id
       title
       items {
-        id
-        date_created
-        name
-        mileage
-        class {
-          id
-          title
-        }
-        year_release
-        coast
-        worktime
-        reg_number
-        park {
-          id
-          address
-          name
-        }
-        photos {
-          file: directus_files_id {
-            id
-            filesize
-            width
-            height
-            filename_disk
-            filename_download
-            title
-          }
-        }
+        ...CarScheme
       }
       default
+    }
+  }
+`;
+const carsGetModel = gql`
+  ${carScheme}
+  query getCarsByClassAndModel(
+    $classId: GraphQLStringOrFloat!
+    $model: String
+  ) {
+    models: brands(filter: { items: { class: { id: { _eq: $classId } } } }) {
+      title
+      slug
+      count: items_func {
+        count
+      }
+    }
+    cars(
+      filter: {
+        class: { id: { _eq: $classId } }
+        brand: { slug: { _eq: $model } }
+      }
+    ) {
+      ...CarScheme
+    }
+    meta: brands(filter: { slug: { _eq: $model } }) {
+      title: title
     }
   }
 `;
@@ -116,8 +123,8 @@ export async function getCars($carClass: number) {
       title: model.title,
       count: model.count.count,
       slug: model.slug,
-    }));
-    return { data: { ...data.value, models: models || [] } };
+    })) || [];
+    return { data: { ...data.value, models: models } };
   });
 }
 
@@ -147,5 +154,27 @@ export async function getDefaultClassCars() {
     classesCars: { title: string; id: CarClass; items: CarInterface[] }[];
   }>(carsDefaultClass).then((response) => {
     return { data: response.data.value?.classesCars[0] };
+  });
+}
+
+export async function getCarsByClassAndModel(classId: number, model: string) {
+  return useAsyncQuery<{
+    cars: CarInterface[];
+    models: { title: string; slug: string; count: { count: number } }[];
+    meta: { title: string; description: string }[];
+  }>(carsGetModel, {
+    classId,
+    model,
+  }).then((res) => {
+    const models = res.data.value?.models.map((model) => ({
+      title: model.title,
+      count: model.count.count,
+      slug: model.slug,
+    }));
+    return {
+      data: res.data.value?.cars,
+      meta: res.data.value?.meta[0],
+      models: models || [],
+    };
   });
 }

@@ -7,6 +7,9 @@ defineProps({
   items: {
     type: Array as PropType<CarInterface[]>,
   },
+  models: {
+    type: Array as PropType<{ count: number }[]>
+  }
 });
 </script>
 
@@ -35,7 +38,7 @@ defineProps({
         <div class="app-cars-big-slider__item">
           <div
             class="app-cars-big-slider__item__wrapper"
-            :data-available-count="'77'"
+            :data-available-count="77"
           >
             <div class="app-cars-big-slider__item-header">
               <div class="app-cars-big-slider__item-title">
