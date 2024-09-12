@@ -19,6 +19,12 @@ body {
   width: 100%;
   margin: 0 auto;
 }
+
+.row {
+  display: flex;
+  gap: 20px;
+}
+
 .page-enter-active,
 .page-leave-active {
   transition: all 0.4s;

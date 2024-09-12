@@ -27,7 +27,14 @@ useHead({
   <div>
     <app-cars-big-slider :items="carList?.slice(0, 3)" />
     <div class="container">
-      <app-car-list :items="carList" />
+      <div class="row">
+        <div>
+          <app-filters-car-list :current-count="carList.length"></app-filters-car-list>
+        </div>
+        <div>
+          <app-car-list :items="carList" />
+        </div>
+      </div>
     </div>
   </div>
 </template>

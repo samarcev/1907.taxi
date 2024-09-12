@@ -31,20 +31,18 @@ useHead({
   <div>
     <app-models-menu :items="data.models || []" />
     <app-cars-big-slider :items="carList.slice(0, 3)" />
-    <div class="container app-main">
-      <div>
-        <app-filters-car-list @filtersChange="" :current-count="carList.length"></app-filters-car-list>
-      </div>
-      <div>
-        <app-car-list :items="carList" />
+    <div class="container">
+      <div class="row">
+        <div>
+          <app-filters-car-list @filtersChange="" :current-count="carList.length"></app-filters-car-list>
+        </div>
+        <div>
+          <app-car-list :items="carList" />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.app-main {
-  display: flex;
-  gap: 20px;
-}
 </style>

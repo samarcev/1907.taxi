@@ -32,20 +32,19 @@ useHead({
 <template>
   <div>
     <app-models-menu :items="models || []" />
-    <div class="container app-main">
-      <div>
-        <app-filters-car-list @filtersChange="" :current-count="carList.length"></app-filters-car-list>
-      </div>
-      <div>
-        <app-car-list :items="carList" />
+    <div class="container">
+      <div class="row">
+        <div>
+          <app-filters-car-list @filtersChange="" :current-count="carList.length"></app-filters-car-list>
+        </div>
+        <div>
+          <app-car-list :items="carList" />
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.app-main {
-  display: flex;
-  gap: 20px;
-}
+
 </style>
