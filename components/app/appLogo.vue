@@ -81,8 +81,14 @@ defineProps({
   display: inline-block;
   color: var(--app-default-text-color);
   user-select: none;
+  line-height: 1;
   svg {
     pointer-events: none;
+  }
+  @media screen and (max-width: 576px) {
+    svg {
+      width: 148px;
+    }
   }
 }
 </style>

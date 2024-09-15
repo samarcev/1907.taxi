@@ -35,9 +35,12 @@ useHead({
     <div class="container">
       <div class="row">
         <div>
-          <app-filters-car-list @filtersChange="" :current-count="carList.length"></app-filters-car-list>
+          <app-filters-car-list
+            @filtersChange=""
+            :current-count="carList.length"
+          ></app-filters-car-list>
         </div>
-        <div>
+        <div class="car-list-wrapper">
           <app-car-list :items="carList" />
         </div>
       </div>
@@ -45,6 +48,4 @@ useHead({
   </div>
 </template>
 
-<style scoped lang="scss">
-
-</style>
+<style scoped lang="scss"></style>

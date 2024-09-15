@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import AppCarsBigSlider from "~/components/app/appCarsBigSlider.vue";
-import {getCars, getDefaultClassCars} from "~/api/requests/cars";
-import AppModelsMenu from "~/components/app/appModelsMenu.vue";
+import { getDefaultClassCars } from "~/api/requests/cars";
 
 const { data } = await getDefaultClassCars();
 const carList = data?.items || [];
@@ -29,9 +28,11 @@ useHead({
     <div class="container">
       <div class="row">
         <div>
-          <app-filters-car-list :current-count="carList.length"></app-filters-car-list>
+          <app-filters-car-list
+              :current-count="carList.length"
+          ></app-filters-car-list>
         </div>
-        <div>
+        <div class="car-list-wrapper">
           <app-car-list :items="carList" />
         </div>
       </div>
@@ -39,4 +40,5 @@ useHead({
   </div>
 </template>
 
-<style scoped></style>
+<style scoped lang="scss">
+</style>

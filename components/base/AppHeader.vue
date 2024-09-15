@@ -21,6 +21,7 @@
 <style scoped lang="scss">
 header {
   max-width: 1300px;
+  width: 100%;
   margin: 0 auto 20px;
   padding: 24px 11px;
   display: flex;
@@ -28,6 +29,9 @@ header {
   justify-content: space-between;
   min-height: 39px;
   gap: 42px;
+  @media screen and (max-width: 576px) {
+    gap: 20px;
+  }
   nav {
     display: flex;
     gap: 73px;

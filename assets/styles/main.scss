@@ -21,10 +21,17 @@ body {
 }
 
 .row {
+  width: 100%;
   display: flex;
   gap: 20px;
+  @media screen and (max-width: 576px) {
+    flex-wrap: wrap;
+    padding: 0 15px;
+  }
 }
-
+.car-list-wrapper {
+  width: 100%;
+}
 .page-enter-active,
 .page-leave-active {
   transition: all 0.4s;

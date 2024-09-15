@@ -53,5 +53,17 @@ defineProps({
       }
     }
   }
+  @media screen and (max-width: 576px) {
+    flex-wrap: nowrap;
+    overflow: auto;
+    width: min-content;
+    justify-content: flex-start;
+    padding: 1em 15px 0;
+    margin: 0 auto 25px;
+    max-width: 100%;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 }
 </style>

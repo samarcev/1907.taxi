@@ -241,6 +241,7 @@ function closeModal() {
   border-radius: 28px;
   align-items: center;
   gap: 30px;
+  width: 100%;
   &-preview {
     img {
       border-radius: 100%;
@@ -261,6 +262,18 @@ function closeModal() {
       border-radius: 40px;
       height: 55px;
       border: none;
+    }
+  }
+  @media screen and (max-width: 576px){
+    padding: 15px 25px;
+    flex-wrap: wrap;
+    &-actions {
+      flex-direction: row;
+      width: 100%;
+      gap: 4px;
+      .btn {
+        height: 31px;
+      }
     }
   }
 }
