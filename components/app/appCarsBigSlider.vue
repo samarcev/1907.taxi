@@ -98,14 +98,17 @@ defineProps({
   --swiper-pagination-bullet-width: 8px;
   --swiper-pagination-bullet-border-radius: 8px;
   position: relative;
-  &::v-deep {
-    .swiper-pagination {
-      @media screen and (min-width: 576px) {
-        display: none;
-      }
+  &::v-deep(.swiper-pagination) {
+    @media screen and (min-width: 576px) {
+      display: none;
     }
-    .swiper-horizontal > .swiper-pagination-bullets.swiper-pagination-bullets-dynamic .swiper-pagination-bullet, .swiper-pagination-horizontal.swiper-pagination-bullets.swiper-pagination-bullets-dynamic .swiper-pagination-bullet {
-      transition: 200ms width;
+    .swiper-horizontal {
+      & > .swiper-pagination-bullets.swiper-pagination-bullets-dynamic,
+      .swiper-pagination-horizontal.swiper-pagination-bullets.swiper-pagination-bullets-dynamic {
+        .swiper-pagination-bullet {
+          transition: 200ms width ease-in-out;
+        }
+      }
     }
     .swiper-pagination-bullet-active {
       width: 44px;

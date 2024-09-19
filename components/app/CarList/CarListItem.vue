@@ -289,22 +289,29 @@ function closeModal() {
   }
 }
 .more-info-car {
-  width: 1088px;
-  max-width: 100%;
+  max-width: 1088px;
+  width: 100%;
   padding: 38px 70px 64px;
+  @media screen and (max-width: 576px) {
+    padding: 32px;
+  }
   &__header {
     margin-bottom: 30px;
   }
   &__body {
     display: flex;
     gap: 50px;
+    @media screen and (max-width: 576px) {
+      flex-direction: column-reverse;
+    }
   }
   &-info {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     gap: 40px;
-    width: 350px;
+    max-width: 350px;
+
     h3 {
       margin-bottom: 23px;
     }
@@ -315,6 +322,9 @@ function closeModal() {
         gap: 5px 45px;
         list-style: none;
         justify-content: space-between;
+        @media screen and (max-width: 576px) {
+          flex-direction: column;
+        }
         li {
           flex: 1;
           white-space: nowrap;

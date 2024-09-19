@@ -32,6 +32,11 @@ body {
 .car-list-wrapper {
   width: 100%;
 }
+.filters-wrapper {
+  @media screen and (max-width: 576px) {
+    display: none;
+  }
+}
 .page-enter-active,
 .page-leave-active {
   transition: all 0.4s;

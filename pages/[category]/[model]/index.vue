@@ -34,7 +34,7 @@ useHead({
     <app-models-menu :items="models || []" />
     <div class="container">
       <div class="row">
-        <div>
+        <div class="filters-wrapper">
           <app-filters-car-list
             @filtersChange=""
             :current-count="carList.length"

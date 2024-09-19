@@ -31,7 +31,8 @@ const carScheme = gql`
       }
     }
     ransom
-  }`
+  }
+`;
 
 const carsQuery = gql`
   ${carScheme}
@@ -47,7 +48,7 @@ const carsQuery = gql`
       }
     }
     cars(filter: { class: { id: { _eq: $carClassId } } }) {
-        ...CarScheme
+      ...CarScheme
     }
   }
 `;
@@ -104,28 +105,37 @@ const carsGetModel = gql`
 `;
 
 export async function getCars($carClass: number) {
-  if (!$carClass) {
+  try {
+    return useAsyncQuery<{
+      meta: { title: string; description?: string };
+      models: { title: string; slug: string; count: { count: number } }[];
+      cars: CarInterface[];
+    }>(carsQuery, {
+      carClass: `${$carClass}`,
+      carClassId: `${$carClass}`,
+    }).then(({ data }) => {
+      if (!data.value) {
+        throw createError({
+          status: 404,
+          statusCode: 404,
+          message: "Page not found",
+        });
+      }
+      const models =
+        data.value?.models.map((model) => ({
+          title: model.title,
+          count: model.count.count,
+          slug: model.slug,
+        })) || [];
+      return { data: { ...data.value, models: models } };
+    });
+  } catch (err) {
     throw createError({
       status: 404,
       statusCode: 404,
       message: "Page not found",
     });
   }
-  return useAsyncQuery<{
-    meta: { title: string; description?: string };
-    models: { title: string; slug: string; count: { count: number } }[];
-    cars: CarInterface[];
-  }>(carsQuery, {
-    carClass: `${$carClass}`,
-    carClassId: `${$carClass}`,
-  }).then(({ data }) => {
-    const models = data.value?.models.map((model) => ({
-      title: model.title,
-      count: model.count.count,
-      slug: model.slug,
-    })) || [];
-    return { data: { ...data.value, models: models } };
-  });
 }
 
 export async function getCategoriesCarsCount() {
