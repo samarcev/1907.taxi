@@ -54,5 +54,4 @@ export default defineNuxtConfig({
     // styleLang: 'css',
     // modules: ["navigation", "pagination"], // all modules are imported by default
   },
-
 });
