@@ -1,3 +1,5 @@
+[![Deploy to VDS](https://github.com/samarcev/1907.taxi/actions/workflows/deploy.yml/badge.svg)](https://github.com/samarcev/1907.taxi/actions/workflows/deploy.yml)
+
 # Nuxt 3 Minimal Starter
 
 Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
