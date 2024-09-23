@@ -55,9 +55,9 @@ defineProps({
               </div>
             </div>
             <div class="app-cars-big-slider__item-info">
-              <div class="num coast">
+              <div class="num cost">
                 <span>
-                  {{ slide.coast }}
+                  {{ slide.cost }}
                 </span>
                 <sub>₽/день</sub>
               </div>

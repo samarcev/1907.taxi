@@ -4,12 +4,15 @@
 @import "reset";
 @import "ui";
 
-
 body {
   color: var(--app-default-text-color);
   font-family: "Onest", sans-serif;
   min-height: 100vh;
-  background: linear-gradient(0deg, var(--app-grey-color-light) 0%, transparent 55%);
+  background: linear-gradient(
+    0deg,
+    var(--app-grey-color-light) 0%,
+    transparent 55%
+  );
   #__root {
     min-height: 100vh;
   }
@@ -28,6 +31,10 @@ body {
     flex-wrap: wrap;
     padding: 0 15px;
   }
+}
+#teleports {
+  position: relative;
+  z-index: 10010010099;
 }
 .car-list-wrapper {
   width: 100%;
@@ -64,4 +71,17 @@ body {
 .list-leave-to {
   opacity: 0;
   transform: translateY(30px);
+}
+
+.is_qform {
+  .qform-field {
+    .qform-field_att-in_left,
+    .qform-field_att-out_left,
+    .qform-field_shift-box {
+      display: none !important;
+    }
+    .qform-field.radio.qform-list-in-row .qform-other-item__box {
+      margin-left: 0 !important;
+    }
+  }
 }

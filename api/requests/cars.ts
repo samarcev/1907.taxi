@@ -11,7 +11,7 @@ const carScheme = gql`
       title
     }
     year_release
-    coast
+    cost: coast
     worktime
     reg_number
     park {

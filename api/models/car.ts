@@ -3,7 +3,7 @@ export interface CarInterface {
   status: "published";
   date_created: string;
   date_updated: string | null;
-  coast: number;
+  cost: number;
   name: string;
   mileage: number;
   class: {

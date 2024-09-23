@@ -11,7 +11,7 @@ import type { Swiper as SwiperType } from "swiper";
 
 moment.locale("ru");
 
-defineProps({
+const props = defineProps({
   data: {
     type: Object as PropType<CarInterface>,
     required: true,
@@ -19,6 +19,7 @@ defineProps({
 });
 const $env = useRuntimeConfig().public;
 let openModal = ref<boolean>(false);
+let openFormModal = ref<boolean>(false);
 function formatNumber(num: number) {
   // Преобразуем число в строку и удаляем все нецифровые символы
   const numStr = num.toString().replace(/\D/g, "");
@@ -49,6 +50,19 @@ function closeModal() {
   mainSwiper.value = null;
   thumbsSwiper.value = null;
 }
+function closeQFormModal() {
+  openFormModal.value = false;
+}
+function rebuildForms() {
+  QFormOrganizer._rebuildForms();
+  const form = document.querySelector('[data-formid=form_fgeC3O2edQe_HiK-eUOraSMkGTBkqXKV]')
+  form?.addEventListener('qform_form_fgeC3O2edQe_HiK-eUOraSMkGTBkqXKV_init', (e) => {
+    const hiddenFieldModel = form.querySelector('input[name=model]') as HTMLInputElement
+    const hiddenFieldCost = form.querySelector('input[name=cost]') as HTMLInputElement
+    hiddenFieldModel.value = `(${props.data.id}) ${props.data.name} - ${props.data.reg_number.toUpperCase()}`
+    hiddenFieldCost.value = props.data?.cost.toString()
+  })
+}
 </script>
 
 <template>
@@ -78,7 +92,7 @@ function closeModal() {
       </div>
       <div class="app-car-list__item-car-info">
         <div>
-          <span>{{ data.coast }} ₽/день</span>
+          <span>{{ data.cost }} ₽/день</span>
         </div>
         <div>
           <span>Пробег: {{ formatNumber(data.mileage) }} км</span>
@@ -102,7 +116,9 @@ function closeModal() {
       </div>
     </div>
     <div class="app-car-list__item-actions">
-      <button class="btn btn-success">Забронировать</button>
+      <button class="btn btn-success" @click="openFormModal = true">
+        Забронировать
+      </button>
       <button class="btn btn-outline" @click="openModal = true">
         Подробные условия
       </button>
@@ -127,13 +143,14 @@ function closeModal() {
                       <span>Год:</span> <b>{{ data.year_release }}</b>
                     </li>
                     <li>
-                      <span>Цена:</span> <b>{{ data.coast }} ₽/день </b>
+                      <span>Цена:</span> <b>{{ data.cost }} ₽/день </b>
                     </li>
                     <li>
                       <span>Класс:</span> <b> {{ data.class.title }} </b>
                     </li>
                     <li>
-                      <span>Выкуп: </span> <b> {{ data.ransom ? 'Да' : 'Нет' }} </b>
+                      <span>Выкуп: </span>
+                      <b> {{ data.ransom ? "Да" : "Нет" }} </b>
                     </li>
                     <li>
                       <span>Пробег: </span>
@@ -226,8 +243,20 @@ function closeModal() {
           </div>
         </div>
         <div class="more-info-car__actions">
-          <button class="btn">Забронировать</button>
+          <button class="btn" @click="openFormModal = true">
+            Забронировать
+          </button>
         </div>
+      </div>
+    </app-modal>
+    <app-modal
+      :show="openFormModal"
+      :id="'modal-form-' + data.id"
+      @opened="rebuildForms"
+      @closeModal="closeQFormModal"
+    >
+      <div class="to-book-model">
+        <div data-formid="form_fgeC3O2edQe_HiK-eUOraSMkGTBkqXKV" class="qform"></div>
       </div>
     </app-modal>
   </div>
@@ -264,7 +293,7 @@ function closeModal() {
       border: none;
     }
   }
-  @media screen and (max-width: 576px){
+  @media screen and (max-width: 576px) {
     padding: 15px 25px;
     flex-wrap: wrap;
     &-actions {
@@ -375,5 +404,10 @@ function closeModal() {
       font-weight: 500;
     }
   }
+}
+.to-book-model {
+  max-width: 615px;
+  width: 100%;
+  padding: 86px 65px 106px;
 }
 </style>

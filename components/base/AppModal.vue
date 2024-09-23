@@ -1,5 +1,6 @@
 <script setup lang="ts">
-defineProps({
+import { ref, watch, defineProps, defineEmits } from "vue";
+const props = defineProps({
   show: {
     type: Boolean,
     required: true,
@@ -13,7 +14,26 @@ defineProps({
     default: true,
   },
 });
-defineEmits(["close-modal"]);
+const emit = defineEmits(["close-modal", "opened"]);
+
+const isVisible = ref(props.show);
+
+// Слежение за изменениями props.show
+watch(
+  () => props.show,
+  (newVal) => {
+    isVisible.value = newVal;
+    if (newVal) {
+      setTimeout(() => emit("opened"), 50);
+    }
+  },
+);
+
+// Функция для закрытия модального окна
+function closeModal() {
+  emit("close-modal");
+  isVisible.value = false;
+}
 </script>
 
 <template>
@@ -21,10 +41,9 @@ defineEmits(["close-modal"]);
     <transition name="modal-fade">
       <div
         class="modal-overlay"
-        @click="backDrop ? $emit('close-modal') : null"
+        @click="backDrop ? closeModal() : null"
         :id="id"
-        v-if="show"
-        ref="modal"
+        v-if="isVisible"
         aria-modal="true"
         aria-labelledby="modal-headline"
       >
@@ -33,7 +52,7 @@ defineEmits(["close-modal"]);
             type="button"
             class="modal-close"
             aria-label="Close modal"
-            @click="$emit('close-modal')"
+            @click="closeModal()"
           >
             <svg
               width="33"

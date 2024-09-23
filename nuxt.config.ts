@@ -27,7 +27,11 @@ export default defineNuxtConfig({
         {
           src: "https://kit.fontawesome.com/4fe3494c81.js",
           crossorigin: "anonymous",
-        }
+        },
+        {
+          src: "/qForm.js",
+          crossorigin: "anonymous",
+        },
       ],
     },
     pageTransition: { name: "page", mode: "out-in" },
