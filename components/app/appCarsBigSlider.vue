@@ -1,12 +1,19 @@
 <script setup lang="ts">
-import type { CarInterface } from "~/api/models/car";
 import type { PropType } from "vue";
 import { Swiper } from "swiper/vue";
 import { Navigation, A11y, Mousewheel, Pagination } from "swiper/modules";
 import "swiper/css/pagination";
+export interface BigSliderItem {
+  id: number
+  model_name: string,
+  min_cost: number,
+  year_release: number,
+  available_count: number,
+  rent: string
+}
 defineProps({
   items: {
-    type: Array as PropType<CarInterface[]>,
+    type: Array as PropType<BigSliderItem[]>,
   },
   models: {
     type: Array as PropType<{ count: number }[]>,
@@ -41,29 +48,29 @@ defineProps({
         <div class="app-cars-big-slider__item">
           <div
             class="app-cars-big-slider__item__wrapper"
-            :data-available-count="77"
+            :data-available-count="slide.available_count"
           >
             <div class="app-cars-big-slider__item-header">
               <div class="app-cars-big-slider__item-title">
-                {{ slide.name }}
+                {{ slide.model_name }}
               </div>
               <div class="app-cars-big-slider__item-available">
                 <span> Доступно: </span>
                 <span class="app-cars-big-slider__item-available-count">
-                  77
+                  {{ slide.available_count }}
                 </span>
               </div>
             </div>
             <div class="app-cars-big-slider__item-info">
               <div class="num cost">
                 <span>
-                  {{ slide.cost }}
+                  {{ slide.min_cost }}
                 </span>
                 <sub>₽/день</sub>
               </div>
               <div class="num worktime">
                 <span>
-                  {{ slide.worktime }}
+                  {{ slide.rent }}
                 </span>
               </div>
               <div class="num release-year">
@@ -174,7 +181,7 @@ defineProps({
         position: absolute;
         right: 10%;
         bottom: 0;
-        font-size: 22.5rem;
+        font-size: clamp(208px, 45vw, 328px);
         color: white;
         font-weight: 700;
         line-height: 0.65;

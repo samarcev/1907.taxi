@@ -1,20 +1,25 @@
 <script setup lang="ts">
-import AppCarsBigSlider from "~/components/app/appCarsBigSlider.vue";
-import { getDefaultClassCars } from "~/api/requests/cars";
+import AppCarsBigSlider, {
+  type BigSliderItem,
+} from "~/components/app/appCarsBigSlider.vue";
+import { getDefaultClass, getSliderItems } from "~/api/requests/cars";
 
-const { data } = await getDefaultClassCars();
-const carList = data?.items || [];
+const data = await getDefaultClass();
+const sliderData = await getSliderItems(data!.id);
+const sliderItems: BigSliderItem[] =
+  sliderData?.models.map((m) => {
+    const car = m.cars[0];
+    return {
+      id: m.id,
+      rent: car.rent,
+      year_release: car.year_of_release,
+      model_name: m.name,
+      min_cost: car.cost,
+      available_count: m.available_count.count,
+    };
+  }) || [];
 
-useSeoMeta({
-  ogTitle: data?.title,
-  ogDescription: "",
-  ogImage: "[og:image]",
-  ogUrl: "[og:url]",
-  twitterTitle: data?.title,
-  twitterDescription: "",
-  twitterImage: "[twitter:image]",
-  twitterCard: "summary",
-});
+useSeoMeta(data!.seo);
 
 useHead({
   title: data?.title,
@@ -24,21 +29,18 @@ useHead({
 
 <template>
   <div>
-    <app-cars-big-slider :items="carList?.slice(0, 3)" />
+    <app-cars-big-slider :items="sliderItems" />
     <div class="container">
       <div class="row">
         <div class="filters-wrapper">
-          <app-filters-car-list
-              :current-count="carList.length"
-          ></app-filters-car-list>
+          <app-filters-car-list :current-count="0"></app-filters-car-list>
         </div>
         <div class="car-list-wrapper">
-          <app-car-list :items="carList" />
+          <app-car-list :items="data?.cars" />
         </div>
       </div>
     </div>
   </div>
 </template>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>

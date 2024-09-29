@@ -1,17 +1,12 @@
 <script setup lang="ts">
-import { getCarsByClassAndModel } from "~/api/requests/cars";
-import { CarClass } from "~/api/models/car";
 import AppModelsMenu from "~/components/app/appModelsMenu.vue";
 const $route = useRoute();
 const { category, model } = $route.params as {
   category: string;
   model: string;
 };
-const { data, meta, models } = await getCarsByClassAndModel(
-  CarClass[category.toUpperCase() as keyof typeof CarClass],
-  model,
-);
-const carList = data || [];
+
+const carList = [];
 useSeoMeta({
   ogTitle: "[og:title]",
   ogDescription: "[og:description]",
@@ -24,14 +19,14 @@ useSeoMeta({
 });
 
 useHead({
-  title: meta?.title || "",
+  title: "",
   meta: [{ name: "description", content: "My amazing site." }],
 });
 </script>
 
 <template>
   <div>
-    <app-models-menu :items="models || []" />
+    <app-models-menu :items="[]" />
     <div class="container">
       <div class="row">
         <div class="filters-wrapper">

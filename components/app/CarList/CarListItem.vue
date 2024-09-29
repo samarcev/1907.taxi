@@ -4,7 +4,7 @@ import { type PropType, ref } from "vue";
 import AppModal from "~/components/base/AppModal.vue";
 import moment from "moment/min/moment-with-locales";
 import "moment/locale/ru";
-
+import { vMaska } from "maska/vue";
 import { A11y, Navigation, Thumbs } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import type { Swiper as SwiperType } from "swiper";
@@ -20,6 +20,13 @@ const props = defineProps({
 const $env = useRuntimeConfig().public;
 let openModal = ref<boolean>(false);
 let openFormModal = ref<boolean>(false);
+
+let orderForm = ref({
+  name: "",
+  phone: "",
+  communication_option: "Телефон",
+  messenger: null,
+});
 function formatNumber(num: number) {
   // Преобразуем число в строку и удаляем все нецифровые символы
   const numStr = num.toString().replace(/\D/g, "");
@@ -50,18 +57,40 @@ function closeModal() {
   mainSwiper.value = null;
   thumbsSwiper.value = null;
 }
-function closeQFormModal() {
+function closeBookModal() {
   openFormModal.value = false;
 }
-function rebuildForms() {
-  QFormOrganizer._rebuildForms();
-  const form = document.querySelector('[data-formid=form_fgeC3O2edQe_HiK-eUOraSMkGTBkqXKV]')
-  form?.addEventListener('qform_form_fgeC3O2edQe_HiK-eUOraSMkGTBkqXKV_init', (e) => {
-    const hiddenFieldModel = form.querySelector('input[name=model]') as HTMLInputElement
-    const hiddenFieldCost = form.querySelector('input[name=cost]') as HTMLInputElement
-    hiddenFieldModel.value = `(${props.data.id}) ${props.data.name} - ${props.data.reg_number.toUpperCase()}`
-    hiddenFieldCost.value = props.data?.cost.toString()
-  })
+
+async function sendOrderForm() {
+  const query = `mutation createOrder($name: String $phone: String, $carId: Int, $messenger: String!) {
+     create_orders_item(data: {
+       name: $name,
+       phone_number: $phone,
+       car: $carId,
+       messenger: $messenger
+     })
+  }`;
+  $fetch($env.API_ENDPOINT + "graphql", {
+    method: "POST",
+    body: {
+      operationName: "createOrder",
+      query: query,
+      variables: {
+        name: orderForm.value.name,
+        phone: orderForm.value.phone,
+        carId: +props.data?.id,
+        messenger: orderForm.value.messenger || "",
+      },
+    },
+  }).finally(() => {
+    closeBookModal();
+    orderForm = ref({
+      name: "",
+      phone: "",
+      communication_option: "Телефон",
+      messenger: null,
+    });
+  });
 }
 </script>
 
@@ -71,7 +100,7 @@ function rebuildForms() {
       <img
         :src="
           $env.API_ASSETS +
-          data.photos[0].file.id +
+          data.thumbnail.id +
           '?width=129&height=129&quality=70&format=webp'
         "
         alt=""
@@ -81,12 +110,12 @@ function rebuildForms() {
       <div class="app-car-list__item-car-info">
         <div>
           <span
-            ><b>{{ data.name }}</b
+            ><b>{{ data.model.name }}</b
             >&nbsp;</span
           >
           <span
-            ><b>{{ data.reg_number }}</b
-            >,&nbsp;<span>{{ data.year_release }} г.</span></span
+            ><b>{{ data.registration_number }}</b
+            >,&nbsp;<span>{{ data.year_of_release }} г.</span></span
           >
         </div>
       </div>
@@ -102,13 +131,13 @@ function rebuildForms() {
             >Автопарк:
             <span style="display: inline-flex; align-items: center">
               <span
-                ><u>{{ data.park.address }}</u
+                ><u>{{ data.car_park.title }}</u
                 >&nbsp; <i class="fa fa-location-dot text-color-accent"></i
               ></span> </span
           ></span>
         </div>
       </div>
-      <div class="app-car-list__item-car-info" v-if="data.photos.length > 1">
+      <div class="app-car-list__item-car-info" v-if="data.gallery.length > 1">
         <button class="more-photos" @click="openModal = true">
           <i class="fa fa-camera text-color-green"></i>
           <span>Посмотреть фото</span>
@@ -123,143 +152,207 @@ function rebuildForms() {
         Подробные условия
       </button>
     </div>
-    <app-modal
-      :show="openModal"
-      @closeModal="closeModal()"
-      :id="'modal-' + data.id"
-    >
-      <div class="more-info-car">
-        <div class="more-info-car-wrapper">
-          <div class="more-info-car__header">
-            <h2>{{ data.reg_number }}</h2>
-          </div>
-          <div class="more-info-car__body">
-            <div class="more-info-car-info">
-              <div>
-                <h3>{{ data.name }}</h3>
-                <div class="car-characteristics">
-                  <ul>
-                    <li>
-                      <span>Год:</span> <b>{{ data.year_release }}</b>
-                    </li>
-                    <li>
-                      <span>Цена:</span> <b>{{ data.cost }} ₽/день </b>
-                    </li>
-                    <li>
-                      <span>Класс:</span> <b> {{ data.class.title }} </b>
-                    </li>
-                    <li>
-                      <span>Выкуп: </span>
-                      <b> {{ data.ransom ? "Да" : "Нет" }} </b>
-                    </li>
-                    <li>
-                      <span>Пробег: </span>
-                      <b>
-                        {{ formatNumber(data.mileage) }}
-                        км
-                      </b>
-                    </li>
-                    <li>
-                      <span>Аренда: </span>
-                      <b>
-                        {{ data.worktime }}
-                      </b>
-                    </li>
-                    <li>
-                      <span>Автопарк: </span>
-                      <b>
-                        {{ data.park.name }}
-                      </b>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-              <div class="car-address">
-                <div>
-                  <span>
-                    <span>Адрес парка:</span>
-                    <br /><b>{{ data.park.address }}</b>
-                  </span>
-                </div>
-                <div>
-                  <div id="map" ref="mapRef"></div>
-                </div>
+  </div>
+  <app-modal
+    :show="openModal"
+    @closeModal="closeModal()"
+    :id="'modal-' + data.id"
+  >
+    <div class="more-info-car">
+      <div class="more-info-car-wrapper">
+        <div class="more-info-car__header">
+          <h2>{{ data.registration_number }}</h2>
+        </div>
+        <div class="more-info-car__body">
+          <div class="more-info-car-info">
+            <div>
+              <h3>{{ data.model.name }}</h3>
+              <div class="car-characteristics">
+                <ul>
+                  <li>
+                    <span>Год:</span> <b>{{ data.year_of_release }}</b>
+                  </li>
+                  <li>
+                    <span>Цена:</span> <b>{{ data.cost }} ₽/день </b>
+                  </li>
+                  <li>
+                    <span>Класс:</span> <b> {{ data.class.title }} </b>
+                  </li>
+                  <li>
+                    <span>Выкуп: </span>
+                    <b> {{ data.buyback ? "Да" : "Нет" }} </b>
+                  </li>
+                  <li>
+                    <span>Пробег: </span>
+                    <b>
+                      {{ formatNumber(data.mileage) }}
+                      км
+                    </b>
+                  </li>
+                  <li>
+                    <span>Аренда: </span>
+                    <b>
+                      {{ data.rent }}
+                    </b>
+                  </li>
+                  <li>
+                    <span>Автопарк: </span>
+                    <b>
+                      {{ data.car_park.title }}
+                    </b>
+                  </li>
+                </ul>
               </div>
             </div>
-            <div class="more-info-car-photos">
-              <div class="more-info-car-photos__header">
-                <span>{{ activeSlideIndex + 1 }}/{{ data.photos.length }}</span>
+            <div class="car-address">
+              <div>
                 <span>
-                  Загружено
-                  {{ moment(data.date_created).format("D MMMM") }}
+                  <span>Адрес парка:</span>
+                  <br /><b>{{ data.car_park.address }}</b>
                 </span>
               </div>
-              <div class="more-info-car-photos__body">
-                <!-- Основной слайдер -->
-                <Swiper
-                  :modules="[Navigation, A11y, Thumbs]"
-                  :slides-per-view="1"
-                  :space-between="32"
-                  :effect="'slide'"
-                  watch-slides-progress
-                  :thumbs="{
-                    swiper: thumbsSwiper,
-                  }"
-                  @slideChange="onSlideChange"
-                  @swiper="setMainSwiper"
-                  class="main-slider"
-                >
-                  <SwiperSlide v-for="(slide, idx) in data.photos" :key="idx">
-                    <img
-                      :src="$env.API_ASSETS + slide.file.id"
-                      alt=""
-                      class="main-slider__item"
-                    />
-                  </SwiperSlide>
-                </Swiper>
-
-                <!-- Слайдер с миниатюрами -->
-                <Swiper
-                  :modules="[Thumbs]"
-                  :space-between="10"
-                  :slides-per-view="5"
-                  @swiper="setThumbsSwiper"
-                  class="thumbs-slider"
-                >
-                  <SwiperSlide v-for="(slide, idx) in data.photos" :key="idx">
-                    <img
-                      :src="
-                        $env.API_ASSETS +
-                        slide.file.id +
-                        '?width=103&height=76&quality=50&format=webp'
-                      "
-                      alt=""
-                      class="thumbs-slider__item"
-                    />
-                  </SwiperSlide>
-                </Swiper>
+              <div>
+                <div id="map" ref="mapRef"></div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="more-info-car__actions">
-          <button class="btn" @click="openFormModal = true">
-            Забронировать
-          </button>
+          <div class="more-info-car-photos">
+            <div class="more-info-car-photos__header">
+              <span>{{ activeSlideIndex + 1 }}/{{ data.gallery.length }}</span>
+              <span>
+                Загружено
+                {{ moment(data.date_created).format("D MMMM") }}
+              </span>
+            </div>
+            <div class="more-info-car-photos__body">
+              <!-- Основной слайдер -->
+              <Swiper
+                :modules="[Navigation, A11y, Thumbs]"
+                :slides-per-view="1"
+                :space-between="32"
+                :effect="'slide'"
+                watch-slides-progress
+                :thumbs="{
+                  swiper: thumbsSwiper,
+                }"
+                @slideChange="onSlideChange"
+                @swiper="setMainSwiper"
+                class="main-slider"
+              >
+                <SwiperSlide v-for="(slide, idx) in data.gallery" :key="idx">
+                  <img
+                    :src="
+                      $env.API_ASSETS +
+                      slide.file.id +
+                      '?width=521&height=307&quality=100&format=webp'
+                    "
+                    alt=""
+                    class="main-slider__item"
+                  />
+                </SwiperSlide>
+              </Swiper>
+
+              <!-- Слайдер с миниатюрами -->
+              <Swiper
+                :modules="[Thumbs]"
+                :space-between="10"
+                :slides-per-view="5"
+                @swiper="setThumbsSwiper"
+                class="thumbs-slider"
+              >
+                <SwiperSlide v-for="(slide, idx) in data.gallery" :key="idx">
+                  <img
+                    :src="
+                      $env.API_ASSETS +
+                      slide.file.id +
+                      '?width=103&height=76&quality=50&format=webp'
+                    "
+                    alt=""
+                    class="thumbs-slider__item"
+                  />
+                </SwiperSlide>
+              </Swiper>
+            </div>
+          </div>
         </div>
       </div>
-    </app-modal>
-    <app-modal
-      :show="openFormModal"
-      :id="'modal-form-' + data.id"
-      @opened="rebuildForms"
-      @closeModal="closeQFormModal"
-    >
-      <div class="to-book-model">
-        <div data-formid="form_fgeC3O2edQe_HiK-eUOraSMkGTBkqXKV" class="qform"></div>
+      <div class="more-info-car__actions">
+        <button class="btn" @click="openFormModal = true">Забронировать</button>
       </div>
-    </app-modal>
-  </div>
+    </div>
+  </app-modal>
+  <app-modal
+    :show="openFormModal"
+    :id="'modal-form-' + data.id"
+    @closeModal="closeBookModal"
+  >
+    <div class="to-book-model">
+      <form @submit.prevent="sendOrderForm()">
+        <h2>Запрос на бронирование автомобиля</h2>
+        <div class="form-control">
+          <label for="">Ваше имя</label>
+          <input
+            type="text"
+            autocomplete="off"
+            required
+            v-model="orderForm.name"
+          />
+        </div>
+        <div class="form-control">
+          <label for="">Ваш телефон</label>
+          <input
+            type="tel"
+            autocomplete="off"
+            required
+            v-model="orderForm.phone"
+            v-maska="'+7 ### ### ##-##'"
+          />
+        </div>
+        <div class="form-control">
+          <div class="radio-group">
+            <label class="radio-control">
+              <input
+                type="radio"
+                name="communication_option"
+                id=""
+                value="Телефон"
+                checked
+                v-model="orderForm.communication_option"
+              />
+              <span> Телефон </span>
+            </label>
+            <label class="radio-control">
+              <input
+                type="radio"
+                name="communication_option"
+                id=""
+                value="Мессенджер"
+                v-model="orderForm.communication_option"
+              />
+              <span>Мессенджер</span>
+            </label>
+          </div>
+        </div>
+        <div
+          class="form-control"
+          v-if="orderForm.communication_option === 'Мессенджер'"
+        >
+          <input
+            type="text"
+            name="messenger"
+            required
+            v-model="orderForm.messenger"
+          />
+        </div>
+        <div>
+          <button type="submit">Отправить заявку</button>
+        </div>
+        <div>
+          <small> Наш специалтист свяжется с вами в ближайшее время </small>
+        </div>
+      </form>
+    </div>
+  </app-modal>
 </template>
 
 <style scoped lang="scss">

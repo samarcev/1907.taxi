@@ -40,6 +40,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       API_ASSETS: process.env.API_ASSETS,
+      API_ENDPOINT: process.env.API_ENDPOINT,
       defaultHost: process.env.DEFAULT_HOST,
     },
   },

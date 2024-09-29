@@ -1,28 +1,23 @@
-import { CarClass } from "~/api/models/car";
-import { getCategoriesCarsCount } from "~/api/requests/cars";
-
+import { getClasses } from "~/api/requests/cars";
+interface carClass {
+  id: number;
+  title: string;
+  slug: string;
+  default: boolean;
+  cars_count: {
+    count: number;
+  };
+}
 export const useCarState = defineStore("cars", {
   actions: {
     async GET_CAR_CLASSES() {
-      const response= (await getCategoriesCarsCount()) as {
-        data: {
-          class: CarClass;
-          title: string;
-          count: number;
-          default_category: boolean;
-        }[];
-      };
-      this.carClasses = response?.data ?? [];
+      const response = await getClasses();
+      this.carClasses = response?.classesCars ?? [];
     },
   },
   state: () => {
     return {
-      carClasses: [] as {
-        class: CarClass;
-        title: string;
-        count: number;
-        default_category: boolean;
-      }[],
+      carClasses: [] as carClass[],
     };
   },
   getters: {
@@ -30,10 +25,7 @@ export const useCarState = defineStore("cars", {
      * @default COMFORT_PLUS
      * */
     getDefaultCategory(state) {
-      return (
-        state.carClasses.find((c) => c.default_category)?.class ||
-        CarClass.COMFORT_PLUS
-      );
+      return state.carClasses.find((c) => c.default)?.id;
     },
   },
 });

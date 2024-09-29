@@ -1,25 +1,33 @@
-import { CarClass, type CarInterface } from "~/api/models/car";
+import type { CarInterface, ClassCar } from "~/api/models/car";
 
 const carScheme = gql`
   fragment CarScheme on cars {
     id
     date_created
-    name
     mileage
+    buyback
+    cost
+    year_of_release
+    rent
+    thumbnail {
+      id
+    }
+    model {
+      id
+      name
+      slug
+    }
+    car_park {
+      id
+      address
+      title
+    }
     class {
       id
       title
+      slug
     }
-    year_release
-    cost: coast
-    worktime
-    reg_number
-    park {
-      id
-      address
-      name
-    }
-    photos {
+    gallery {
       file: directus_files_id {
         id
         filesize
@@ -30,161 +38,130 @@ const carScheme = gql`
         title
       }
     }
-    ransom
   }
 `;
-
-const carsQuery = gql`
-  ${carScheme}
-  query getCarsByClassId($carClass: ID!, $carClassId: GraphQLStringOrFloat!) {
-    meta: classesCars_by_id(id: $carClass) {
-      title
-    }
-    models: brands(filter: { items: { class: { id: { _eq: $carClassId } } } }) {
+const ClassesQuery = gql`
+  query {
+    classesCars(filter: { cars: { status: { _eq: "published" } } }) {
+      id
       title
       slug
-      count: items_func {
-        count
-      }
-    }
-    cars(filter: { class: { id: { _eq: $carClassId } } }) {
-      ...CarScheme
-    }
-  }
-`;
-const carsCategoryCounts = gql`
-  query {
-    classesCars {
-      id
-      title
-      default_category: default
-      count: items_func {
+      default
+      cars_count: cars_func {
         count
       }
     }
   }
 `;
-const carsDefaultClass = gql`
+const DefaultClassQuery = gql`
   ${carScheme}
   query {
-    classesCars(filter: { default: { _eq: true } }) {
+    classesCars(
+      filter: { default: { _eq: true }, cars: { status: { _eq: "published" } } }
+    ) {
       id
+      slug
       title
-      items {
+      seo
+      cars {
         ...CarScheme
       }
-      default
     }
   }
 `;
-const carsGetModel = gql`
+const SliderItemsQuery = gql`
+  query getSliderItems($classCar: GraphQLStringOrFloat) {
+    models(
+      filter: {
+        cars: {
+          class: { id: { _eq: $classCar } }
+          status: { _eq: "published" }
+        }
+      }
+      limit: 5
+    ) {
+      id
+      name
+      available_count: cars_func {
+        count
+      }
+      cars(sort: "-rating", limit: 1) {
+        cost
+        rent
+        year_of_release
+        rating
+      }
+    }
+  }
+`;
+const carsBySlugClass = gql`
   ${carScheme}
-  query getCarsByClassAndModel(
-    $classId: GraphQLStringOrFloat!
-    $model: String
-  ) {
-    models: brands(filter: { items: { class: { id: { _eq: $classId } } } }) {
-      title
+  query getCarsBySlugClass($slug: String!) {
+    classesCars(filter: { slug: { _eq: $slug } }) {
+      default
+      id
+      seo
       slug
-      count: items_func {
+      title
+      cars_count: cars_func {
         count
       }
     }
-    cars(
-      filter: {
-        class: { id: { _eq: $classId } }
-        brand: { slug: { _eq: $model } }
-      }
-    ) {
+    cars(filter: { class: { slug: { _eq: $slug } } }) {
       ...CarScheme
-    }
-    meta: brands(filter: { slug: { _eq: $model } }) {
-      title: title
     }
   }
 `;
 
-export async function getCars($carClass: number) {
-  try {
-    return useAsyncQuery<{
-      meta: { title: string; description?: string };
-      models: { title: string; slug: string; count: { count: number } }[];
-      cars: CarInterface[];
-    }>(carsQuery, {
-      carClass: `${$carClass}`,
-      carClassId: `${$carClass}`,
-    }).then(({ data }) => {
-      if (!data.value) {
-        throw createError({
-          status: 404,
-          statusCode: 404,
-          message: "Page not found",
-        });
-      }
-      const models =
-        data.value?.models.map((model) => ({
-          title: model.title,
-          count: model.count.count,
-          slug: model.slug,
-        })) || [];
-      return { data: { ...data.value, models: models } };
-    });
-  } catch (err) {
-    throw createError({
-      status: 404,
-      statusCode: 404,
-      message: "Page not found",
-    });
-  }
-}
-
-export async function getCategoriesCarsCount() {
-  return useAsyncQuery<{
+export async function getClasses() {
+  const result = await useAsyncQuery<{
     classesCars: {
       id: number;
-      count: { count: number };
+      slug: string;
       title: string;
-      default_category: boolean;
+      default: boolean;
+      cars_count: { count: number };
     }[];
-  }>(carsCategoryCounts).then(({ data }) => {
-    if (data.value)
-      return {
-        data: data.value!.classesCars.map((category) => ({
-          class: +category.id as CarClass,
-          title: category.title,
-          count: category.count.count,
-          default_category: category.default_category,
-        })),
-      };
-  });
+  }>(ClassesQuery);
+  const { data } = result;
+  return data.value;
 }
 
-export async function getDefaultClassCars() {
-  return useAsyncQuery<{
-    classesCars: { title: string; id: CarClass; items: CarInterface[] }[];
-  }>(carsDefaultClass).then((response) => {
-    return { data: response.data.value?.classesCars[0] };
-  });
+export async function getDefaultClass() {
+  const { data, error } = await useAsyncQuery<{
+    classesCars: (ClassCar & { cars: CarInterface[] })[];
+  }>(DefaultClassQuery);
+  if (error.value) {
+    throw new Error(error.value.message);
+  }
+  return data.value?.classesCars[0];
 }
 
-export async function getCarsByClassAndModel(classId: number, model: string) {
-  return useAsyncQuery<{
+export async function getSliderItems(classCar: string) {
+  const { data } = await useAsyncQuery<{
+    models: {
+      id: number;
+      name: string;
+      available_count: { count: number };
+      cars: {
+        cost: number;
+        rent: string;
+        year_of_release: number;
+        rating: number;
+      }[];
+    }[];
+  }>(SliderItemsQuery, {
+    classCar,
+  });
+  return data.value;
+}
+
+export async function getCarsBySlugClass(slug: string) {
+  const { data } = await useAsyncQuery<{
     cars: CarInterface[];
-    models: { title: string; slug: string; count: { count: number } }[];
-    meta: { title: string; description: string }[];
-  }>(carsGetModel, {
-    classId,
-    model,
-  }).then((res) => {
-    const models = res.data.value?.models.map((model) => ({
-      title: model.title,
-      count: model.count.count,
-      slug: model.slug,
-    }));
-    return {
-      data: res.data.value?.cars,
-      meta: res.data.value?.meta[0],
-      models: models || [],
-    };
+    classesCars: ClassCar[];
+  }>(carsBySlugClass, {
+    slug,
   });
+  return data.value || { cars: [], classesCars: [] };
 }

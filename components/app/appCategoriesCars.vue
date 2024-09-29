@@ -1,28 +1,23 @@
 <script setup lang="ts">
 import { useCarState } from "~/store/cars";
-import { CarClass } from "~/api/models/car";
 
 const store = useCarState();
 store.GET_CAR_CLASSES();
-
-const route = useRoute();
 </script>
 
 <template>
   <nav class="app-categories-cars">
     <nuxt-link
-      v-for="category of store.carClasses.filter((c) => c.count)"
-      :to="'/' + CarClass[category.class].toLowerCase()"
-      :key="category.class"
+      v-for="category of store.carClasses.filter((c) => c.cars_count.count)"
+      :to="'/' + category.slug"
+      :key="category.slug"
       active-class="active"
       exact-active-class="active"
       :class="{
-        active: route.fullPath.includes(
-          '/' + CarClass[category.class].toLowerCase() + '/',
-        ),
+        active: store.getDefaultCategory === category.id
       }"
     >
-      <span class="badge">{{ category.count }}</span>
+      <span class="badge">{{ category.cars_count.count }}</span>
       <span>
         {{ category.title }}
       </span>

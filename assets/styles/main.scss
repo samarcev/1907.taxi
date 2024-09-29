@@ -8,11 +8,8 @@ body {
   color: var(--app-default-text-color);
   font-family: "Onest", sans-serif;
   min-height: 100vh;
-  background: linear-gradient(
-    0deg,
-    var(--app-grey-color-light) 0%,
-    transparent 55%
-  );
+  background: linear-gradient(0deg, var(--app-grey-color-light), white);
+
   #__root {
     min-height: 100vh;
   }
