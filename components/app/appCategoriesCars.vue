@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useCarState } from "~/store/cars";
 
+const router = useRoute();
 const store = useCarState();
 store.GET_CAR_CLASSES();
 </script>
@@ -11,10 +12,10 @@ store.GET_CAR_CLASSES();
       v-for="category of store.carClasses.filter((c) => c.cars_count.count)"
       :to="'/' + category.slug"
       :key="category.slug"
-      active-class="active"
-      exact-active-class="active"
       :class="{
-        active: store.getDefaultCategory === category.id
+        active:
+          (store.getDefaultCategory === category.id && router.path === '/') ||
+          router.path.includes('/' + category.slug + '/'),
       }"
     >
       <span class="badge">{{ category.cars_count.count }}</span>

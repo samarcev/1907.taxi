@@ -41,6 +41,7 @@ function formatNumber(num: number) {
 const mainSwiper = ref<SwiperType | null>(null);
 const thumbsSwiper = ref<SwiperType | null>(null);
 const activeSlideIndex = ref(0);
+const successRequest = ref(false);
 const setThumbsSwiper = (swiper: SwiperType) => {
   thumbsSwiper.value = swiper;
 };
@@ -59,6 +60,7 @@ function closeModal() {
 }
 function closeBookModal() {
   openFormModal.value = false;
+  successRequest.value = false;
 }
 
 async function sendOrderForm() {
@@ -70,27 +72,39 @@ async function sendOrderForm() {
        messenger: $messenger
      })
   }`;
-  $fetch($env.API_ENDPOINT + "graphql", {
-    method: "POST",
-    body: {
-      operationName: "createOrder",
-      query: query,
-      variables: {
-        name: orderForm.value.name,
-        phone: orderForm.value.phone,
-        carId: +props.data?.id,
-        messenger: orderForm.value.messenger || "",
+  $fetch<{ data: { create_orders_item: boolean } }>(
+    $env.API_ENDPOINT + "graphql",
+    {
+      method: "POST",
+      body: {
+        operationName: "createOrder",
+        query: query,
+        variables: {
+          name: orderForm.value.name,
+          phone: orderForm.value.phone,
+          carId: +props.data?.id,
+          messenger: orderForm.value.messenger || "",
+        },
       },
     },
-  }).finally(() => {
-    closeBookModal();
-    orderForm = ref({
-      name: "",
-      phone: "",
-      communication_option: "Телефон",
-      messenger: null,
+  )
+    .then((res) => {
+      successRequest.value = res.data.create_orders_item;
+      orderForm.value = {
+        name: "",
+        phone: "",
+        communication_option: "Телефон",
+        messenger: null,
+      };
+    })
+    .finally(() => {
+      orderForm.value = {
+        name: "",
+        phone: "",
+        communication_option: "Телефон",
+        messenger: null,
+      };
     });
-  });
 }
 </script>
 
@@ -287,7 +301,7 @@ async function sendOrderForm() {
     @closeModal="closeBookModal"
   >
     <div class="to-book-model">
-      <form @submit.prevent="sendOrderForm()">
+      <form @submit.prevent="sendOrderForm()" v-if="!successRequest">
         <h2>Запрос на бронирование автомобиля</h2>
         <div class="form-control">
           <label for="">Ваше имя</label>
@@ -295,6 +309,7 @@ async function sendOrderForm() {
             type="text"
             autocomplete="off"
             required
+            placeholder=""
             v-model="orderForm.name"
           />
         </div>
@@ -304,34 +319,41 @@ async function sendOrderForm() {
             type="tel"
             autocomplete="off"
             required
+            placeholder=""
+            minlength="16"
             v-model="orderForm.phone"
             v-maska="'+7 ### ### ##-##'"
           />
         </div>
-        <div class="form-control">
-          <div class="radio-group">
-            <label class="radio-control">
-              <input
-                type="radio"
-                name="communication_option"
-                id=""
-                value="Телефон"
-                checked
-                v-model="orderForm.communication_option"
-              />
-              <span> Телефон </span>
-            </label>
-            <label class="radio-control">
-              <input
-                type="radio"
-                name="communication_option"
-                id=""
-                value="Мессенджер"
-                v-model="orderForm.communication_option"
-              />
-              <span>Мессенджер</span>
-            </label>
+        <div class="radio-group">
+          <div class="radio-group-label">
+            <span>Удобный способ связи</span>
           </div>
+          <label class="radio-control">
+            <span class="radio-control-input">
+              <input
+                  type="radio"
+                  name="communication_option"
+                  id=""
+                  value="Телефон"
+                  checked
+                  v-model="orderForm.communication_option"
+              />
+            </span>
+            <span class="radio-control-label"> Телефон </span>
+          </label>
+          <label class="radio-control">
+            <span class="radio-control-input">
+              <input
+                  type="radio"
+                  name="communication_option"
+                  id=""
+                  value="Мессенджер"
+                  v-model="orderForm.communication_option"
+              />
+            </span>
+            <span class="radio-control-label">Мессенджер</span>
+          </label>
         </div>
         <div
           class="form-control"
@@ -345,12 +367,15 @@ async function sendOrderForm() {
           />
         </div>
         <div>
-          <button type="submit">Отправить заявку</button>
+          <button class="btn btn btn-rounded btn-large btn-dark w-full" type="submit">Отправить заявку</button>
         </div>
         <div>
           <small> Наш специалтист свяжется с вами в ближайшее время </small>
         </div>
       </form>
+      <div v-else>
+        <h3>Наш специалтист свяжется с вами в ближайшее время</h3>
+      </div>
     </div>
   </app-modal>
 </template>
@@ -502,5 +527,22 @@ async function sendOrderForm() {
   max-width: 615px;
   width: 100%;
   padding: 86px 65px 106px;
+  h2 {
+    font-size: 32px;
+    font-weight: 500;
+    margin-bottom: 23px;
+  }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+  @media screen and (max-width: 576px) {
+    padding: 15px 25px;
+    h2 {
+      font-size: 28px;
+      margin-bottom: 0;
+    }
+  }
 }
 </style>

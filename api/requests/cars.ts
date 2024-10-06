@@ -1,4 +1,4 @@
-import type { CarInterface, ClassCar } from "~/api/models/car";
+import type {CarInterface, ClassCar, ModelCar} from "~/api/models/car";
 
 const carScheme = gql`
   fragment CarScheme on cars {
@@ -82,6 +82,7 @@ const SliderItemsQuery = gql`
     ) {
       id
       name
+      slug
       available_count: cars_func {
         count
       }
@@ -112,7 +113,40 @@ const carsBySlugClass = gql`
     }
   }
 `;
-
+const carsBySlugModelAndSlugClass = gql`
+  ${carScheme}
+  query getCarsByModelAndClass($class: String, $model: String) {
+    classesCars(filter: { slug: { _eq: $class } }) {
+      id
+      title
+      slug
+      default
+      cars_func {
+        count
+      }
+      seo
+    }
+    models(filter: { slug: { _eq: $model } }) {
+      id
+      name
+      slug
+      cars_func {
+        count
+      }
+      seo
+    }
+    cars(
+      filter: {
+        _and: [
+          { class: { slug: { _eq: $class } } }
+          { model: { slug: { _eq: $model } } }
+        ]
+      }
+    ) {
+      ...CarScheme
+    }
+  }
+`;
 export async function getClasses() {
   const result = await useAsyncQuery<{
     classesCars: {
@@ -142,6 +176,7 @@ export async function getSliderItems(classCar: string) {
     models: {
       id: number;
       name: string;
+      slug: string;
       available_count: { count: number };
       cars: {
         cost: number;
@@ -164,4 +199,16 @@ export async function getCarsBySlugClass(slug: string) {
     slug,
   });
   return data.value || { cars: [], classesCars: [] };
+}
+
+export async function getCarsBySlugModel(slugClass: string, slugModel: string) {
+  const { data } = await useAsyncQuery<{
+    classesCars: ClassCar[];
+    models: ModelCar[];
+    cars: CarInterface[];
+  }>(carsBySlugModelAndSlugClass, {
+    class: slugClass,
+    model: slugModel,
+  })
+  return data.value || { cars: [], classesCars: [], models: [] };
 }

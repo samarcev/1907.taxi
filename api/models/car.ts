@@ -59,10 +59,11 @@ interface CarPark {
   address: string;
   title: string;
 }
-interface ModelCar {
+export interface ModelCar {
   name: string;
   slug: string;
   id: string;
+  seo: UseSeoMetaInput
 }
 export interface ClassCar {
   default: boolean;

@@ -29,9 +29,8 @@ export default defineNuxtConfig({
           crossorigin: "anonymous",
         },
         {
-          src: "/qForm.js",
-          crossorigin: "anonymous",
-        },
+          src: "https://telegram.org/js/telegram-web-app.js"
+        }
       ],
     },
     pageTransition: { name: "page", mode: "out-in" },
@@ -51,6 +50,12 @@ export default defineNuxtConfig({
         httpEndpoint: process.env.API_ENDPOINT_GQL as string,
       },
     },
+  },
+  router: {
+    options: {
+      linkActiveClass: 'active',
+      linkExactActiveClass: 'exact-active'
+    }
   },
   swiper: {
     // Swiper options

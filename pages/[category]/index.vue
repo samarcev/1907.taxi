@@ -10,6 +10,7 @@ const carClassParam = $route.params.category as string;
 const { cars, classesCars } = await getCarsBySlugClass(carClassParam);
 const classCar = classesCars[0];
 const sliderData = await getSliderItems(classCar.id);
+const modelsData = sliderData?.models.map((m) =>({title: m.name, slug: m.slug, count: m.available_count.count }))
 const sliderItems: BigSliderItem[] =
   sliderData?.models.map((m) => {
     const car = m.cars[0];
@@ -42,7 +43,7 @@ useHead({
 
 <template>
   <div>
-    <app-models-menu :items="[]" />
+    <app-models-menu :items="modelsData || []" />
     <app-cars-big-slider :items="sliderItems || []" />
     <div class="container">
       <div class="row">

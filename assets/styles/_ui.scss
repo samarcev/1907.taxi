@@ -28,12 +28,116 @@
     color: white;
     @include button-active($green-color);
   }
-  &-outline{
+  &-dark {
+    color: white;
+    background-color: #1c1d1f;
+  }
+  &-outline {
     background: none;
     color: var(--app-grey-color);
     border: 1px solid currentColor !important;
     &:active {
       background: rgba(#000, 0.05);
     }
+  }
+  &-large {
+    height: 60px;
+    font-weight: 500;
+    font-size: 18px;
+  }
+  &-rounded {
+    border-radius: 30px;
+  }
+}
+
+.form-control {
+  width: 100%;
+  position: relative;
+  display: inline-flex;
+  gap: 4px;
+  flex-direction: column;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  input {
+    width: 100%;
+    height: 59px;
+    padding: 0 36px;
+    font-size: 16px;
+    border-radius: 8px;
+    border: 1px solid #3c3c3c;
+  }
+  label {
+    position: absolute;
+    left: 36px;
+    top: 2.2em;
+    transition: all 200ms ease-in-out;
+    pointer-events: none;
+  }
+  &:has(input:active, input:focus),
+  &:has(input:not(:placeholder-shown)) {
+    label {
+      top: -0.2em;
+      left: 0;
+    }
+  }
+}
+.radio-control {
+  display: flex;
+  gap: 12px;
+  cursor: pointer;
+  &:hover {
+    .radio-control-input {
+      &:after {
+        content: "";
+        width: 26px;
+        height: 26px;
+        border-radius: inherit;
+        background-color: var(--app-accent-color);
+      }
+    }
+  }
+  &-input {
+    position: relative;
+    width: 32px;
+    height: 32px;
+    border-radius: 100%;
+    aspect-ratio: 1/1;
+    border: 1px solid #b1b1b1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    &:after {
+      content: "";
+      width: 26px;
+      height: 26px;
+      border-radius: inherit;
+      background-color: transparent;
+      transition: all 0.2s ease-in-out;
+    }
+    &:has(input:checked) {
+      &:after {
+        background-color: var(--app-accent-color);
+      }
+    }
+  }
+  &-label {
+    padding-top: 6px;
+  }
+  input[type="radio"] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    opacity: 0;
+    z-index: -100;
+  }
+}
+.radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 50px;
+  &-label {
+    width: 100%;
   }
 }

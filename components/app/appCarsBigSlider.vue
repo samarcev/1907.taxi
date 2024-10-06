@@ -232,7 +232,7 @@ defineProps({
       }
       &-count {
         display: inline-flex;
-        border-radius: 100%;
+        border-radius: 36px;
         font-size: clamp(1em, 28px, 2.5em);
         text-align: center;
         justify-content: center;
@@ -240,7 +240,7 @@ defineProps({
         min-width: 36px;
         color: white;
         background-color: var(--app-default-text-color);
-        padding: 4px 6px;
+        padding: 0 6px;
 
         @media screen and (max-width: 576px) {
           font-size: 12px;
