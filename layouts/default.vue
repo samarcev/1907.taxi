@@ -4,6 +4,12 @@ import AppCategoriesCars from "~/components/app/appCategoriesCars.vue";
 
 const route = useRoute();
 const $env = useRuntimeConfig();
+
+onMounted(() => {
+  if (route.query.ref) {
+    localStorage?.setItem('referral_code', <string>route.query.ref)
+  }
+})
 useHead(() => ({
   link: [
     {

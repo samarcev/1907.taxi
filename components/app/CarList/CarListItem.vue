@@ -8,6 +8,7 @@ import { vMaska } from "maska/vue";
 import { A11y, Navigation, Thumbs } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import type { Swiper as SwiperType } from "swiper";
+import { createOrder } from "~/api/requests/createOrder";
 
 moment.locale("ru");
 
@@ -64,47 +65,15 @@ function closeBookModal() {
 }
 
 async function sendOrderForm() {
-  const query = `mutation createOrder($name: String $phone: String, $carId: Int, $messenger: String!) {
-     create_orders_item(data: {
-       name: $name,
-       phone_number: $phone,
-       car: $carId,
-       messenger: $messenger
-     })
-  }`;
-  $fetch<{ data: { create_orders_item: boolean } }>(
-    $env.API_ENDPOINT + "graphql",
-    {
-      method: "POST",
-      body: {
-        operationName: "createOrder",
-        query: query,
-        variables: {
-          name: orderForm.value.name,
-          phone: orderForm.value.phone,
-          carId: +props.data?.id,
-          messenger: orderForm.value.messenger || "",
-        },
-      },
-    },
-  )
-    .then((res) => {
-      successRequest.value = res.data.create_orders_item;
-      orderForm.value = {
-        name: "",
-        phone: "",
-        communication_option: "Телефон",
-        messenger: null,
-      };
-    })
-    .finally(() => {
-      orderForm.value = {
-        name: "",
-        phone: "",
-        communication_option: "Телефон",
-        messenger: null,
-      };
-    });
+  const { mutate } = createOrder({
+    name: orderForm.value.name,
+    phone: orderForm.value.phone,
+    carId: +props.data?.id,
+    messenger: orderForm.value.messenger || "",
+    ref_code: localStorage.getItem("referral_code"),
+  });
+
+  const res = await mutate();
 }
 </script>
 
@@ -332,12 +301,12 @@ async function sendOrderForm() {
           <label class="radio-control">
             <span class="radio-control-input">
               <input
-                  type="radio"
-                  name="communication_option"
-                  id=""
-                  value="Телефон"
-                  checked
-                  v-model="orderForm.communication_option"
+                type="radio"
+                name="communication_option"
+                id=""
+                value="Телефон"
+                checked
+                v-model="orderForm.communication_option"
               />
             </span>
             <span class="radio-control-label"> Телефон </span>
@@ -345,11 +314,11 @@ async function sendOrderForm() {
           <label class="radio-control">
             <span class="radio-control-input">
               <input
-                  type="radio"
-                  name="communication_option"
-                  id=""
-                  value="Мессенджер"
-                  v-model="orderForm.communication_option"
+                type="radio"
+                name="communication_option"
+                id=""
+                value="Мессенджер"
+                v-model="orderForm.communication_option"
               />
             </span>
             <span class="radio-control-label">Мессенджер</span>
@@ -367,7 +336,12 @@ async function sendOrderForm() {
           />
         </div>
         <div>
-          <button class="btn btn btn-rounded btn-large btn-dark w-full" type="submit">Отправить заявку</button>
+          <button
+            class="btn btn btn-rounded btn-large btn-dark w-full"
+            type="submit"
+          >
+            Отправить заявку
+          </button>
         </div>
         <div>
           <small> Наш специалтист свяжется с вами в ближайшее время </small>

@@ -45,6 +45,7 @@ export default defineNuxtConfig({
   },
   apollo: {
     proxyCookies: true,
+    autoImports: true,
     clients: {
       default: {
         httpEndpoint: process.env.API_ENDPOINT_GQL as string,
