@@ -8,7 +8,6 @@ import { vMaska } from "maska/vue";
 import { A11y, Navigation, Thumbs } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import type { Swiper as SwiperType } from "swiper";
-import { createOrder } from "~/api/requests/createOrder";
 
 moment.locale("ru");
 
@@ -43,6 +42,7 @@ const mainSwiper = ref<SwiperType | null>(null);
 const thumbsSwiper = ref<SwiperType | null>(null);
 const activeSlideIndex = ref(0);
 const successRequest = ref(false);
+const orderId = ref<number>()
 const setThumbsSwiper = (swiper: SwiperType) => {
   thumbsSwiper.value = swiper;
 };
@@ -62,18 +62,41 @@ function closeModal() {
 function closeBookModal() {
   openFormModal.value = false;
   successRequest.value = false;
+  orderId.value = undefined
 }
 
 async function sendOrderForm() {
-  const { mutate } = createOrder({
+  const data: any = {
     name: orderForm.value.name,
-    phone: orderForm.value.phone,
-    carId: +props.data?.id,
-    messenger: orderForm.value.messenger || "",
-    ref_code: localStorage.getItem("referral_code"),
-  });
+    phone_number: orderForm.value.phone,
+    car: +props.data?.id,
+  };
+  if (orderForm.value.messenger) {
+    data["messenger"] = orderForm.value.messenger;
+  }
+  if (localStorage.getItem("referral_code")) {
+    data["ref_code"] = localStorage.getItem("referral_code");
+  }
+  try {
+    const res = await $fetch<{ order_id: number }>("http://localhost:8055/order", {
+      method: "POST",
+      body: data,
+    });
 
-  const res = await mutate();
+    orderId.value = res.order_id
+    successRequest.value = true
+    orderForm.value = {
+      name: "",
+      phone: "",
+      communication_option: "Телефон",
+      messenger: null,
+    }
+  }catch (err) {
+    console.error(err)
+  }
+
+
+
 }
 </script>
 
@@ -348,7 +371,9 @@ async function sendOrderForm() {
         </div>
       </form>
       <div v-else>
+        <h2>Ваш заказ успешно создан</h2>
         <h3>Наш специалтист свяжется с вами в ближайшее время</h3>
+        <p>ID заказа: {{ orderId }}</p>
       </div>
     </div>
   </app-modal>
