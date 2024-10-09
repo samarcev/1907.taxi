@@ -24,16 +24,33 @@ watch(
   (newVal) => {
     isVisible.value = newVal;
     if (newVal) {
+      disableScroll();
       setTimeout(() => emit("opened"), 50);
     }
   },
 );
 
+onBeforeUnmount(() => {
+  enableScroll();
+});
 // Функция для закрытия модального окна
 function closeModal() {
   emit("close-modal");
+  enableScroll()
   isVisible.value = false;
 }
+const disableScroll = () => {
+  // Сохраняем ширину скроллбара
+  const scrollBarWidth = window.innerWidth - document.documentElement.clientWidth;
+  // Применяем стили к body
+  document.body.style.overflow = 'hidden';
+  document.body.style.paddingRight = `${scrollBarWidth}px`;
+};
+
+const enableScroll = () => {
+  document.body.style.overflow = '';
+  document.body.style.paddingRight = '';
+};
 </script>
 
 <template>
