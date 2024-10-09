@@ -78,7 +78,7 @@ async function sendOrderForm() {
     data["ref_code"] = localStorage.getItem("referral_code");
   }
   try {
-    const res = await $fetch<{ order_id: number }>("http://localhost:8055/order", {
+    const res = await $fetch<{ order_id: number }>($env.API_ENDPOINT + "order", {
       method: "POST",
       body: data,
     });
