@@ -30,6 +30,7 @@ jobs:
           USER: ${{ secrets.USER }}
           KEY: ${{ secrets.SSH_KEY }}
         run: |
+          whoami
           echo "${{ secrets.SSH_KEY }}" > private_key
           chmod 600 private_key
           rsync -avz --delete --exclude='node_modules' --exclude='.git' -e "ssh -o StrictHostKeyChecking=no -i private_key" ./ $USER@$HOST:var/www/www-root/data/www/autopilot-taxi.tw1.su/
