@@ -32,4 +32,4 @@ jobs:
         run: |
           echo "${{ secrets.SSH_KEY }}" > private_key
           chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key $USER@$HOST "whoami && cd ~ && cd var/www/www-root/data/www/autopilot-taxi.tw1.su/ && ls -la"
+          ssh -o StrictHostKeyChecking=no -i private_key $USER@$HOST "cd /var/www/www-root/data/www/autopilot-taxi.tw1.su/ && ls -la"
