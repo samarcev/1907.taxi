@@ -30,6 +30,6 @@ jobs:
           USER: ${{ env.USER }}
           KEY: ${{ env.SSH_KEY }}
         run: |
-          echo "${{ variables.SSH_KEY }}" > private_key
+          echo "${{ env.SSH_KEY }}" > private_key
           chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key $USER@$HOST "cd var/www/www-root/data/www/autopilot-taxi.tw1.su/ && ls -la"
