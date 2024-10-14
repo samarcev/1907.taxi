@@ -33,5 +33,5 @@ jobs:
           echo "${{ secrets.SSH_KEY }}" > private_key
           chmod 600 private_key
           ls -la
-          rsync -avz --include=".output" --include="ecosystem.config.js" --exclude="*"  -e "ssh -o StrictHostKeyChecking=no -i private_key" ./ $USER@$HOST:/var/www/www-root/data/www/autopilot-taxi.tw1.su/
+          rsync -avz --include=".output" --include=".output/***" --include="ecosystem.config.js" --exclude="*"  -e "ssh -o StrictHostKeyChecking=no -i private_key" ./ $USER@$HOST:/var/www/www-root/data/www/autopilot-taxi.tw1.su/
           ssh -o StrictHostKeyChecking=no -i private_key $USER@$HOST "cd /var/www/www-root/data/www/autopilot-taxi.tw1.su/ && cd .output/server npm install && cd ../.. pm2 restart"
