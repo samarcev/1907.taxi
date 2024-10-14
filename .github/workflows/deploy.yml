@@ -26,10 +26,10 @@ jobs:
 
       - name: Deploy to VDS
         env:
-          HOST: ${{ env.HOST }}
-          USER: ${{ env.USER }}
-          KEY: ${{ env.SSH_KEY }}
+          HOST: ${{ vars.HOST }}
+          USER: ${{ vars.USER }}
+          KEY: ${{ vars.SSH_KEY }}
         run: |
-          echo "${{ env.SSH_KEY }}" > private_key
+          echo "${{ vars.SSH_KEY }}" > private_key
           chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key ${{ env.USER }}@${{ env.HOST }} "cd var/www/www-root/data/www/autopilot-taxi.tw1.su/ && ls -la"
+          ssh -o StrictHostKeyChecking=no -i private_key ${{ vars.USER }}@${{ vars.HOST }} "cd var/www/www-root/data/www/autopilot-taxi.tw1.su/ && ls -la"
