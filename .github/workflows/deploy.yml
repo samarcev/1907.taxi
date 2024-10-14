@@ -26,9 +26,9 @@ jobs:
 
       - name: Deploy to VDS
         env:
-          HOST: ${{ variables.HOST }}
-          USER: ${{ variables.USER }}
-          KEY: ${{ variables.SSH_KEY }}
+          HOST: ${{ HOST }}
+          USER: ${{ USER }}
+          KEY: ${{ SSH_KEY }}
         run: |
           echo "${{ variables.SSH_KEY }}" > private_key
           chmod 600 private_key
