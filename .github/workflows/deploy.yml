@@ -31,16 +31,16 @@ jobs:
           KEY: ${{ secrets.SSH_KEY }}
         run: |
           echo "${{ secrets.SSH_KEY }}" > private_key
-          chmod 755 private_key
+          chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key $USER@$HOST "rm -rf /var/www/www-root/data/www/autopilot-taxi.tw1.su/.output/"
           rsync -av --ignore-errors --include=".output/***" --include="ecosystem.config.js" --exclude="*"  -e "ssh -o StrictHostKeyChecking=no -i private_key" ./ $USER@$HOST:/var/www/www-root/data/www/autopilot-taxi.tw1.su/
-      - name: Build
+      - name: Run project
         env:
           HOST: ${{ secrets.HOST }}
           USER: ${{ secrets.USER }}
           KEY: ${{ secrets.SSH_KEY }}
         run: |
           echo "${{ secrets.SSH_KEY }}" > private_key
-          chmod 755 private_key
+          chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key $USER@$HOST "pm2 ls && cd /var/www/www-root/data/www/autopilot-taxi.tw1.su/.output/server && npm install"
           ssh -o StrictHostKeyChecking=no -i private_key $USER@$HOST "cd /var/www/www-root/data/www/autopilot-taxi.tw1.su/ && pm2 restart"
