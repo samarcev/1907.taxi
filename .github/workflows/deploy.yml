@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
 
     steps:
       - name: Checkout repository
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16' # Укажите версию Node.js, необходимую для вашего проекта
+          node-version: '18' # Укажите версию Node.js, необходимую для вашего проекта
 
       - name: Install dependencies
         run: npm install
@@ -31,6 +31,16 @@ jobs:
           KEY: ${{ secrets.SSH_KEY }}
         run: |
           echo "${{ secrets.SSH_KEY }}" > private_key
-          chmod 600 private_key
-          rsync -avz --delete --exclude='node_modules' --exclude='.git' -e "ssh -o StrictHostKeyChecking=no -i private_key" ./ $USER@$HOST:var/www/www-root/data/www/autopilot-taxi.tw1.su/
-          ssh -o StrictHostKeyChecking=no -i private_key $USER@$HOST "cd var/www/www-root/data/www/autopilot-taxi.tw1.su/ && npm install --production && pm2 restart"
+          chmod 755 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key $USER@$HOST "rm -rf /var/www/www-root/data/www/autopilot-taxi.tw1.su/.output/"
+          rsync -av --ignore-errors --include=".output/***" --include="ecosystem.config.js" --exclude="*"  -e "ssh -o StrictHostKeyChecking=no -i private_key" ./ $USER@$HOST:/var/www/www-root/data/www/autopilot-taxi.tw1.su/
+      - name: Build
+        env:
+          HOST: ${{ secrets.HOST }}
+          USER: ${{ secrets.USER }}
+          KEY: ${{ secrets.SSH_KEY }}
+        run: |
+          echo "${{ secrets.SSH_KEY }}" > private_key
+          chmod 755 private_key
+          ssh -o StrictHostKeyChecking=no -i private_key $USER@$HOST "pm2 ls && cd /var/www/www-root/data/www/autopilot-taxi.tw1.su/.output/server && npm install"
+          ssh -o StrictHostKeyChecking=no -i private_key $USER@$HOST "cd /var/www/www-root/data/www/autopilot-taxi.tw1.su/ && pm2 restart"

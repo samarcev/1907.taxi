@@ -38,9 +38,9 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public: {
-      API_ASSETS: process.env.API_ASSETS,
-      API_ENDPOINT: process.env.API_ENDPOINT,
-      defaultHost: process.env.DEFAULT_HOST,
+      API_ASSETS: "https://api.autopilot-taxi.tw1.su/assets/",
+      API_ENDPOINT: "https://api.autopilot-taxi.tw1.su/",
+      defaultHost: "autopilot-taxi.tw1.su",
     },
   },
   apollo: {
@@ -48,7 +48,7 @@ export default defineNuxtConfig({
     autoImports: true,
     clients: {
       default: {
-        httpEndpoint: process.env.API_ENDPOINT_GQL as string,
+        httpEndpoint: "https://api.autopilot-taxi.tw1.su/graphql"
       },
     },
   },
