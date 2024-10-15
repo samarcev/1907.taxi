@@ -33,7 +33,7 @@ jobs:
           echo "${{ secrets.SSH_KEY }}" > private_key
           chmod 600 private_key
           ssh -o StrictHostKeyChecking=no -i private_key $USER@$HOST "rm -rf /var/www/www-root/data/www/autopilot-taxi.tw1.su/.output/"
-          rsync -av --ignore-errors --include=".output/***" --include="package.json" --include="package-lock.json" --include="ecosystem.config.js" --exclude="*"  -e "ssh -o StrictHostKeyChecking=no -i private_key" ./ $USER@$HOST:/var/www/www-root/data/www/autopilot-taxi.tw1.su/
+          rsync -av --ignore-errors --include=".output/***" --include=".nuxt/***" --include="ecosystem.config.js" --exclude="*"  -e "ssh -o StrictHostKeyChecking=no -i private_key" ./ $USER@$HOST:/var/www/www-root/data/www/autopilot-taxi.tw1.su/
       - name: Run project
         env:
           HOST: ${{ secrets.HOST }}
@@ -42,5 +42,5 @@ jobs:
         run: |
           echo "${{ secrets.SSH_KEY }}" > private_key
           chmod 600 private_key
-          ssh -o StrictHostKeyChecking=no -i private_key $USER@$HOST "cd /var/www/www-root/data/www/autopilot-taxi.tw1.su/ && npm install"
+          ssh -o StrictHostKeyChecking=no -i private_key $USER@$HOST "cd /var/www/www-root/data/www/autopilot-taxi.tw1.su/"
           ssh -o StrictHostKeyChecking=no -i private_key $USER@$HOST "cd /var/www/www-root/data/www/autopilot-taxi.tw1.su/ && pm2 restart ecosystem.config.js"
