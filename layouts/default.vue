@@ -18,6 +18,9 @@ useHead(() => ({
     },
   ],
 }));
+function now() {
+  return new Date().getFullYear()
+}
 </script>
 
 <template>
@@ -27,6 +30,7 @@ useHead(() => ({
     <main>
       <slot />
     </main>
+    <footer> &copy; {{ now() }}</footer>
   </div>
 </template>
 
@@ -39,6 +43,11 @@ useHead(() => ({
   main {
     flex: 1;
     padding-bottom: 50px;
+  }
+  footer {
+    text-align: center;
+    padding: 30px;
+    margin: 0 auto;
   }
 }
 </style>
