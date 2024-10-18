@@ -8,9 +8,10 @@ import { vMaska } from "maska/vue";
 import { A11y, Navigation, Thumbs } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/vue";
 import type { Swiper as SwiperType } from "swiper";
-
+import {TelegramUserState} from "~/store/telegram_user";
 moment.locale("ru");
 
+const TgUserState  = TelegramUserState()
 const props = defineProps({
   data: {
     type: Object as PropType<CarInterface>,
@@ -42,7 +43,7 @@ const mainSwiper = ref<SwiperType | null>(null);
 const thumbsSwiper = ref<SwiperType | null>(null);
 const activeSlideIndex = ref(0);
 const successRequest = ref(false);
-const orderId = ref<number>()
+const orderId = ref<number>();
 const setThumbsSwiper = (swiper: SwiperType) => {
   thumbsSwiper.value = swiper;
 };
@@ -62,7 +63,7 @@ function closeModal() {
 function closeBookModal() {
   openFormModal.value = false;
   successRequest.value = false;
-  orderId.value = undefined
+  orderId.value = undefined;
 }
 
 async function sendOrderForm() {
@@ -77,26 +78,30 @@ async function sendOrderForm() {
   if (localStorage.getItem("referral_code")) {
     data["ref_code"] = localStorage.getItem("referral_code");
   }
+  if (TgUserState.id) {
+    data['telegram_id'] = TgUserState.id
+    data['telegram_username'] = TgUserState.username
+  }
   try {
-    const res = await $fetch<{ order_id: number }>($env.API_ENDPOINT + "order", {
-      method: "POST",
-      body: data,
-    });
+    const res = await $fetch<{ order_id: number }>(
+      $env.API_ENDPOINT + "order",
+      {
+        method: "POST",
+        body: data,
+      },
+    );
 
-    orderId.value = res.order_id
-    successRequest.value = true
+    orderId.value = res.order_id;
+    successRequest.value = true;
     orderForm.value = {
       name: "",
       phone: "",
       communication_option: "Телефон",
       messenger: null,
-    }
-  }catch (err) {
-    console.error(err)
+    };
+  } catch (err) {
+    console.error(err);
   }
-
-
-
 }
 </script>
 
@@ -375,6 +380,9 @@ async function sendOrderForm() {
         <h3>Наш специалтист свяжется с вами в ближайшее время</h3>
         <p>ID заказа: {{ orderId }}</p>
       </div>
+      <client-only>
+        <pre>{{ tgUserData }}</pre>
+      </client-only>
     </div>
   </app-modal>
 </template>

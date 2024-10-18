@@ -37,7 +37,7 @@ defineProps({
         dynamicBullets: true,
       }"
       :mousewheel="{
-        eventsTarget: 'container',
+        forceToAxis: true,
       }"
     >
       <SwiperSlide

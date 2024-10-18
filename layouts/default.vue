@@ -1,15 +1,22 @@
 <script setup lang="ts">
 import AppHeader from "~/components/base/AppHeader.vue";
 import AppCategoriesCars from "~/components/app/appCategoriesCars.vue";
+import { TelegramUserState } from "~/store/telegram_user";
 
 const route = useRoute();
 const $env = useRuntimeConfig();
+const { SET_TG_USER_DATA } = TelegramUserState();
 
-onMounted(() => {
+onMounted(async () => {
   if (route.query.ref) {
-    localStorage?.setItem('referral_code', <string>route.query.ref)
+    localStorage?.setItem("referral_code", <string>route.query.ref);
   }
-})
+  const TgApp = await import("vue-tg");
+  const { initDataUnsafe } = TgApp.useWebApp();
+  if (!!initDataUnsafe.user.id) {
+    SET_TG_USER_DATA(initDataUnsafe.user);
+  }
+});
 useHead(() => ({
   link: [
     {
@@ -18,9 +25,6 @@ useHead(() => ({
     },
   ],
 }));
-function now() {
-  return new Date().getFullYear()
-}
 </script>
 
 <template>
@@ -30,7 +34,6 @@ function now() {
     <main>
       <slot />
     </main>
-    <footer> &copy; {{ now() }}</footer>
   </div>
 </template>
 
