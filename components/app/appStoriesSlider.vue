@@ -118,5 +118,8 @@ function close() {
     text-align: center;
     font-weight: 700;
   }
+  &-image {
+    text-align: center;
+  }
 }
 </style>
