@@ -18,6 +18,6 @@ export const TelegramUserState = defineStore("TelegramUser", {
   },
   getters: {
     id: (s) => s.user?.id || null,
-    username: (s) => s.user?.username || null
+    username: (s) => s.user?.username || null,
   },
 });

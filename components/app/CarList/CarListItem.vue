@@ -380,9 +380,6 @@ async function sendOrderForm() {
         <h3>Наш специалтист свяжется с вами в ближайшее время</h3>
         <p>ID заказа: {{ orderId }}</p>
       </div>
-      <client-only>
-        <pre>{{ tgUserData }}</pre>
-      </client-only>
     </div>
   </app-modal>
 </template>

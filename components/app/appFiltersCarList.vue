@@ -39,7 +39,6 @@ const options = ref([
 ]);
 
 const selectOption = (option: { id: number; value: string }) => {
-  console.log(option);
   selectedOption.value = option;
 };
 </script>
