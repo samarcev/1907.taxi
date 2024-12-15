@@ -41,7 +41,7 @@
       </svg>
       <span> Вакансии </span>
     </nuxt-link>
-    <nuxt-link active-class="active" to="/work">
+    <nuxt-link active-class="active" to="/income">
       <svg
         width="24"
         height="24"

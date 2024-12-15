@@ -81,7 +81,7 @@ defineProps({
             </div>
           </div>
           <img
-            src="~/assets/images/big-slider/optima-slide-preview.png"
+            src="/assets/images/big-slider/optima-slide-preview.png"
             alt="Kia Optima"
             class="app-cars-big-slider__item-bg-img"
           />
@@ -192,6 +192,10 @@ defineProps({
       @media screen and (max-width: 576px) {
         padding: 31px 27px;
         border-radius: 35px;
+        min-height: 182px;
+        &:before {
+          content: none;
+        }
       }
     }
     &-header {
@@ -214,7 +218,8 @@ defineProps({
       text-overflow: ellipsis;
       white-space: nowrap;
       @media screen and (max-width: 576px) {
-        font-size: 28px;
+        font-size: 20px;
+        text-transform: none;
       }
     }
     &-available {
@@ -285,8 +290,7 @@ defineProps({
       }
 
       @media screen and (max-width: 576px) {
-        flex-direction: column;
-        gap: 0;
+        display: none;
       }
     }
     &-bg-img {
@@ -295,6 +299,9 @@ defineProps({
       left: 50%;
       transform: translateX(-50%);
       z-index: 1;
+      @media screen and (max-width: 568px) {
+        width: 388px;
+      }
     }
   }
 }

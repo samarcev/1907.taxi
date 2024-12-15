@@ -13,7 +13,7 @@ defineProps({
   <div class="container">
     <nav class="app-models-menu">
       <nuxt-link
-        :to="'/' + route.params.category + '/' + model.slug + '/'"
+        :to="'/rent/' + route.params.category + '/' + model.slug + '/'"
         v-for="(model, idx) in items"
         active-class="active"
         :key="idx"

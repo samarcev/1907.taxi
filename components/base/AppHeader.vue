@@ -12,8 +12,8 @@
     <a href="tel:+000000000" class="btn btn-outline header-call-btn">
       Позвонить
     </a>
-    <nuxt-link href="/prices" class="btn btn-accent header-mobile-link">
-      Все цены
+    <nuxt-link to="#" class="btn btn-accent header-mobile-link">
+      Список
     </nuxt-link>
   </header>
 </template>

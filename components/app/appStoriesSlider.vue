@@ -9,6 +9,7 @@ onMounted(() => {
 });
 function close() {
   document.body.style.overflow = "";
+  sessionStorage.setItem('showStoriesBlock', 'true')
   emit("close");
 }
 </script>

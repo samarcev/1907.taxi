@@ -21,6 +21,48 @@ body {
   margin: 0 auto;
 }
 
+#main-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  justify-content: space-between;
+  nav#switch-menu {
+    overflow: hidden;
+    display: flex;
+    text-align: center;
+    border-radius: 12px;
+    width: calc(100% - 40px);
+    margin: 0 20px 20px;
+    a {
+      display: inline-flex;
+      flex: 1;
+      background-color: #E4E4E4;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      gap: 10px;
+      text-decoration: none;
+      &.active {
+        background-color: var(--app-default-text-color);
+        color: #FFFFFF;
+        svg {
+          color: var(--app-accent-color);
+        }
+      }
+    }
+  }
+  main {
+    flex: 1;
+    padding-bottom: 50px;
+  }
+  footer {
+    text-align: center;
+    padding: 30px;
+    margin: 0 auto;
+  }
+}
+
 .row {
   width: 100%;
   display: flex;

@@ -8,8 +8,9 @@ import AppNavigation from "~/components/app/appNavigation.vue";
 const route = useRoute();
 const $env = useRuntimeConfig();
 const { SET_TG_USER_DATA } = TelegramUserState();
-const showStoriesBlock = ref(true);
+const showStoriesBlock = ref<boolean>(false);
 onMounted(async () => {
+  showStoriesBlock.value = !sessionStorage.getItem('showStoriesBlock')
   if (route.query.ref) {
     localStorage?.setItem("referral_code", <string>route.query.ref);
   }
@@ -27,13 +28,17 @@ useHead(() => ({
     },
   ],
 }));
+
+function isActive(path: string) {
+  return route.path.startsWith(path)
+}
 </script>
 
 <template>
   <div id="main-wrapper">
     <app-header />
     <nav id="switch-menu">
-      <nuxt-link to="/rent">
+      <nuxt-link to="/rent" :class="{ active: isActive('/rent') }">
         <svg
           width="27"
           height="25"
@@ -79,57 +84,8 @@ useHead(() => ({
     <main>
       <slot />
     </main>
-    <app-navigation />
-    <transition name="modal-fade">
-      <app-stories-slider
-        v-if="showStoriesBlock"
-        @close="showStoriesBlock = false"
-      />
-    </transition>
   </div>
 </template>
 
 <style scoped lang="scss">
-#main-wrapper {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-  justify-content: space-between;
-  nav#switch-menu {
-    overflow: hidden;
-    display: flex;
-    text-align: center;
-    align-items: center;
-    border-radius: 12px;
-    width: calc(100% - 40px);
-    margin: 0 20px 20px;
-    a {
-      display: inline-flex;
-      flex: 1;
-      background-color: #E4E4E4;
-      text-align: center;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      gap: 10px;
-      text-decoration: none;
-      &.active {
-        background-color: var(--app-default-text-color);
-        color: #FFFFFF;
-        svg {
-          color: var(--app-accent-color);
-        }
-      }
-    }
-  }
-  main {
-    flex: 1;
-    padding-bottom: 50px;
-  }
-  footer {
-    text-align: center;
-    padding: 30px;
-    margin: 0 auto;
-  }
-}
 </style>
