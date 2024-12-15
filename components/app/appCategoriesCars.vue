@@ -10,18 +10,18 @@ store.GET_CAR_CLASSES();
   <nav class="app-categories-cars">
     <nuxt-link
       v-for="category of store.carClasses.filter((c) => c.cars_count.count)"
-      :to="'/' + category.slug"
+      :to="'/rent/' + category.slug"
       :key="category.slug"
       :class="{
         active:
-          (store.getDefaultCategory === category.id && router.path === '/') ||
-          router.path.includes('/' + category.slug + '/'),
+          (store.getDefaultCategory === category.id && router.path === '/rent') ||
+          router.path.includes('/rent' + category.slug + '/'),
       }"
     >
-      <span class="badge">{{ category.cars_count.count }}</span>
       <span>
         {{ category.title }}
       </span>
+      <span class="badge">{{ category.cars_count.count }}</span>
     </nuxt-link>
   </nav>
 </template>
@@ -34,26 +34,31 @@ store.GET_CAR_CLASSES();
   justify-content: center;
   margin-bottom: 25px;
   a {
-    text-transform: uppercase;
     text-decoration: none;
     color: inherit;
     position: relative;
     line-height: 1;
     font-weight: 300;
+    padding: 5px 25px;
+    border: 1px solid #D9D9D9;
+    border-radius: 13px;
+    display: inline-flex;
+    gap: 5pt;
     &.active {
-      text-decoration: underline;
       font-weight: 400;
+      background-color: var(--app-default-text-color);
+      color: #FFFFFF;
+      .badge {
+        display: inline;
+        color: var(--app-accent-color);
+      }
     }
     .badge {
-      position: absolute;
-      left: 100%;
-      bottom: 100%;
-      font-size: 12px;
-      font-weight: 700;
+      display: none;
     }
   }
   @media screen and (max-width: 576px) {
-    gap: 34px;
+    gap: 11px;
     width: min-content;
     overflow: auto;
     justify-content: flex-start;
