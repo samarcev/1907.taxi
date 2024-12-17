@@ -5,8 +5,11 @@ definePageMeta({
   layout: "income",
 });
 function onToggle(item: any) {
-  const details = item[0] as HTMLDetailsElement
-  details.open = !details.open
+  const details = item[0] as HTMLDetailsElement;
+  details.open = !details.open;
+}
+function getMockAvatar(idx: number) {
+  return 'https://thispersondoesnotexist.com/?v='+ idx
 }
 </script>
 
@@ -74,13 +77,21 @@ function onToggle(item: any) {
       </button>
     </div>
     <div class="user-list">
-      <div class="user-list__item-wrapper" v-for="item in 30" :key="item">
+      <div class="user-list__item-wrapper" v-for="item in 10" :key="item">
         <div class="user-list__item">
-          <div class="user-list__item-avatar"></div>
+          <img
+            class="user-list__item-avatar"
+            :src="getMockAvatar(item)"
+            loading="lazy"
+            alt=""
+          />
           <div class="user-list__item-body">
             <div class="user-list__item-body-top">
               <div class="user-list__item-username">AndryGolagr</div>
-              <button class="toggle-footer-btn" @click="onToggle($refs[`details_` + item])">
+              <button
+                class="toggle-footer-btn"
+                @click="onToggle($refs[`details_` + item])"
+              >
                 <svg
                   width="19"
                   height="19"
@@ -152,10 +163,14 @@ function onToggle(item: any) {
           </div>
         </div>
         <details class="user-list__item-footer" :ref="`details_` + item">
-          <summary style="display: none;"></summary>
+          <summary style="display: none"></summary>
           <div>
-            <div><span>Привлёк: </span> <span>{{item}} пользователей</span></div>
-            <div><span>Начислено: </span> <span><b>24 000</b>₽</span></div>
+            <div>
+              <span>Привлёк: </span> <span>{{ item }} пользователей</span>
+            </div>
+            <div>
+              <span>Начислено: </span> <span><b>24 000</b>₽</span>
+            </div>
           </div>
         </details>
       </div>
@@ -292,9 +307,13 @@ function onToggle(item: any) {
     }
     &-footer {
       & > div {
-        display: grid;
+        display: flex;
         overflow: hidden;
         transition: grid-template-rows 0.3s ease-in-out;
+        justify-content: space-between;
+        gap: 20px;
+        font-size: 12px;
+        padding: 17px 16px;
       }
       &[open] > div {
         grid-template-rows: 1fr;

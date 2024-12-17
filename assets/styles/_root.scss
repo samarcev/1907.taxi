@@ -21,8 +21,12 @@ $grey-color-light: #e7e7e7;
     color: var(--app-accent-color) !important
   }
   &-color-green {
-    color: var(--app-green-color);
+    color: var(--app-green-color) !important;
   }
+  &-color-grey {
+    color: var(--app-grey-color) !important;
+  }
+
 }
 
 

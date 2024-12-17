@@ -49,6 +49,14 @@
   &-rounded {
     border-radius: 30px;
   }
+  &-link {
+    background: none;
+    padding: 0;
+    border-radius: 0;
+    line-height: inherit;
+    font-weight: inherit;
+    font-size: inherit;
+  }
 }
 
 .form-control {

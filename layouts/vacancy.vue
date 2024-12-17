@@ -6,7 +6,9 @@
   <div id="main-wrapper">
     <header class="vacancy-header">
       <app-logo />
-      <nuxt-link to="#" class="btn btn-accent btn-rounded">Как заработать?</nuxt-link>
+      <nuxt-link to="#" class="btn btn-accent btn-rounded">
+        Как заработать?
+      </nuxt-link>
     </header>
     <main>
       <slot />
@@ -22,5 +24,12 @@
     align-items: center;
     margin-bottom: 20px;
     gap: 20px;
+    .btn-rounded {
+      border-radius: 13px;
+      line-height: 1;
+      padding: 9px 18px;
+      font-weight: 700;
+      font-size: 14px;
+    }
   }
 </style>
