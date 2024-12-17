@@ -81,7 +81,7 @@ defineProps({
   display: inline-block;
   color: var(--app-default-text-color);
   user-select: none;
-  line-height: 1;
+  line-height: 0;
   svg {
     pointer-events: none;
   }

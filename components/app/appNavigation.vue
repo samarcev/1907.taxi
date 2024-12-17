@@ -86,14 +86,14 @@
 
 <style scoped lang="scss">
 .app-navigation-menu {
-  position: sticky;
+  position: fixed;
   z-index: 100100;
   background-color: #fff;
   bottom: 0;
   left: 0;
   right: 0;
-  padding: 20px;
-  border-radius: 20px;
+  padding: 20px 20px 52px;
+  border-radius: 20px 20px 0 0;
   box-shadow: 0 0 10px rgba(#000, 0.15);
   display: flex;
   gap: 10px;

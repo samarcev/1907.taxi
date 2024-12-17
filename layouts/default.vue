@@ -1,36 +1,10 @@
 <script setup lang="ts">
 import AppHeader from "~/components/base/AppHeader.vue";
-import AppCategoriesCars from "~/components/app/appCategoriesCars.vue";
-import { TelegramUserState } from "~/store/telegram_user";
-import AppStoriesSlider from "~/components/app/appStoriesSlider.vue";
-import AppNavigation from "~/components/app/appNavigation.vue";
 
 const route = useRoute();
-const $env = useRuntimeConfig();
-const { SET_TG_USER_DATA } = TelegramUserState();
-const showStoriesBlock = ref<boolean>(false);
-onMounted(async () => {
-  showStoriesBlock.value = !sessionStorage.getItem('showStoriesBlock')
-  if (route.query.ref) {
-    localStorage?.setItem("referral_code", <string>route.query.ref);
-  }
-  const TgApp = await import("vue-tg");
-  const { initDataUnsafe } = TgApp.useWebApp();
-  if (!!initDataUnsafe.user?.id) {
-    SET_TG_USER_DATA(initDataUnsafe.user);
-  }
-});
-useHead(() => ({
-  link: [
-    {
-      rel: "canonical",
-      href: "https://" + $env.public.defaultHost + route.path,
-    },
-  ],
-}));
 
 function isActive(path: string) {
-  return route.path.startsWith(path)
+  return route.path.startsWith(path);
 }
 </script>
 
@@ -87,5 +61,4 @@ function isActive(path: string) {
   </div>
 </template>
 
-<style scoped lang="scss">
-</style>
+<style scoped lang="scss"></style>
