@@ -71,7 +71,7 @@ onUnmounted(() => {
 
 <style scoped>
 .counter {
-  font-size: 2rem;
+  font-size: inherit;
   font-weight: bold;
   color: inherit;
   display: inline;

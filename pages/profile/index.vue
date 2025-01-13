@@ -1,5 +1,8 @@
 <script setup lang="ts">
 
+onMounted(() => {
+  navigateTo('/rent')
+})
 </script>
 
 <template>

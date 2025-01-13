@@ -216,7 +216,7 @@ function getMockAvatar(idx: number) {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    font-size: 40px;
+    font-size: clamp(35px, 3vw, 40px);
     font-weight: 500;
     width: 100%;
     text-align: center;
@@ -224,6 +224,7 @@ function getMockAvatar(idx: number) {
   }
   &-ready-form-payment {
     .total-information-value {
+      white-space: nowrap;
       justify-content: flex-start;
     }
   }
@@ -269,6 +270,7 @@ function getMockAvatar(idx: number) {
     &-body {
       flex: 1;
       font-size: 10px;
+      overflow: hidden;
       &-top {
         border-bottom: 1px solid #d9d9d9;
         display: flex;
@@ -287,6 +289,8 @@ function getMockAvatar(idx: number) {
         gap: 15px;
         justify-content: space-between;
         padding-top: 5px;
+        padding-bottom: 5px;
+        overflow: auto;
         .info-block {
           display: inline-flex;
           flex-flow: column;
